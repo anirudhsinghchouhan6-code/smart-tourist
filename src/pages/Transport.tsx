@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import heroTransport from "@/assets/hero-transport.jpg";
 
 const mockTrains = [
   {
@@ -134,18 +135,31 @@ export default function Transport() {
       
       <main className="pt-20">
         {/* Hero Search Section */}
-        <section className="relative py-16 bg-gradient-to-br from-primary/10 via-background to-teal/10">
-          <div className="container mx-auto px-4">
+        <section className="relative py-24 md:py-32 overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img 
+              src={heroTransport} 
+              alt="Buses and trains to multiple destinations" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-8"
             >
-              <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
+              <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">
+                Rajdhani • Shatabdi • Volvo • Premium Buses
+              </Badge>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4">
                 Book <span className="text-gradient">Buses & Trains</span>
               </h1>
-              <p className="text-muted-foreground text-lg">
-                Travel smart with best prices on buses and trains
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Travel to multiple destinations with the best ground transport options
               </p>
             </motion.div>
 

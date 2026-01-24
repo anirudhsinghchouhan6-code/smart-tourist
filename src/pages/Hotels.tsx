@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import heroHotels from "@/assets/hero-hotels.jpg";
 
 const mockHotels = [
   {
@@ -113,18 +114,31 @@ export default function Hotels() {
       
       <main className="pt-20">
         {/* Hero Search Section */}
-        <section className="relative py-16 bg-gradient-to-br from-teal/10 via-background to-primary/10">
-          <div className="container mx-auto px-4">
+        <section className="relative py-24 md:py-32 overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img 
+              src={heroHotels} 
+              alt="Multiple hotel destinations" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-8"
             >
-              <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
+              <Badge className="mb-4 bg-teal/20 text-teal border-teal/30">
+                Beach Resorts • Mountain Lodges • City Hotels • Overwater Villas
+              </Badge>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4">
                 Find Perfect <span className="text-gradient">Hotels</span>
               </h1>
-              <p className="text-muted-foreground text-lg">
-                Compare prices from 100+ booking sites
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Discover handpicked hotels across multiple destinations with best price guarantee
               </p>
             </motion.div>
 
