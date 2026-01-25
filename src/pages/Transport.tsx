@@ -4,6 +4,10 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AIChatWidget } from "@/components/AIChatWidget";
 import { CityAutocomplete } from "@/components/CityAutocomplete";
+import { TrainCard } from "@/components/transport/TrainCard";
+import { BusCard } from "@/components/transport/BusCard";
+import { SeatSelectionModal } from "@/components/transport/SeatSelectionModal";
+import { TransportFilters } from "@/components/transport/TransportFilters";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
@@ -12,6 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Train, 
   Bus, 
@@ -19,9 +24,8 @@ import {
   Users, 
   ArrowRightLeft, 
   Search,
-  Clock,
-  Zap,
-  Star
+  Loader2,
+  RefreshCw
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -37,9 +41,14 @@ const mockTrains = [
     from: "New Delhi",
     to: "Mumbai Central",
     duration: "15h 40m",
-    classes: ["3A", "2A", "1A"],
-    price: 2145,
-    availability: "Available",
+    distance: "1384 km",
+    classes: [
+      { name: "3A", price: 2145, available: 45 },
+      { name: "2A", price: 3250, available: 12 },
+      { name: "1A", price: 5450, available: 0, waitlist: 8 },
+    ],
+    amenities: ["Food", "Pantry", "WiFi"],
+    daysOfOperation: ["Mon", "Wed", "Fri", "Sun"],
   },
   {
     id: 2,
@@ -50,9 +59,13 @@ const mockTrains = [
     from: "New Delhi",
     to: "Bhopal Jn",
     duration: "8h 10m",
-    classes: ["CC", "EC"],
-    price: 1385,
-    availability: "WL 15",
+    distance: "702 km",
+    classes: [
+      { name: "CC", price: 1385, available: 28 },
+      { name: "EC", price: 2650, available: 5 },
+    ],
+    amenities: ["Food", "WiFi"],
+    daysOfOperation: ["Daily except Sun"],
   },
   {
     id: 3,
@@ -63,9 +76,30 @@ const mockTrains = [
     from: "New Delhi",
     to: "Mumbai Central",
     duration: "11h 40m",
-    classes: ["3A", "2A", "1A"],
-    price: 1895,
-    availability: "Available",
+    distance: "1384 km",
+    classes: [
+      { name: "3A", price: 1895, available: 68 },
+      { name: "2A", price: 2850, available: 22 },
+      { name: "1A", price: 4750, available: 8 },
+    ],
+    amenities: ["Food", "Pantry"],
+    daysOfOperation: ["Tue", "Thu", "Sat"],
+  },
+  {
+    id: 4,
+    name: "Garib Rath Express",
+    number: "12216",
+    departure: "17:30",
+    arrival: "09:15",
+    from: "New Delhi",
+    to: "Mumbai Bandra",
+    duration: "15h 45m",
+    distance: "1377 km",
+    classes: [
+      { name: "3A", price: 1250, available: 120 },
+    ],
+    amenities: ["Pantry"],
+    daysOfOperation: ["Mon", "Thu"],
   },
 ];
 
@@ -73,7 +107,7 @@ const mockBuses = [
   {
     id: 1,
     operator: "VRL Travels",
-    type: "Volvo Multi-Axle A/C Sleeper",
+    type: "Volvo Multi-Axle A/C Sleeper (2+1)",
     departure: "21:00",
     arrival: "07:30",
     from: "Bangalore",
@@ -81,12 +115,17 @@ const mockBuses = [
     duration: "10h 30m",
     price: 1200,
     rating: 4.5,
+    reviewCount: 2456,
     seats: 12,
+    amenities: ["WiFi", "Charging", "Entertainment", "AC"],
+    boardingPoints: ["Majestic", "Silk Board", "Electronic City", "Marathahalli"],
+    droppingPoints: ["KPHB", "Ameerpet", "Secunderabad", "LB Nagar"],
+    busType: "sleeper" as const,
   },
   {
     id: 2,
     operator: "SRS Travels",
-    type: "Mercedes Benz Multi-Axle",
+    type: "Mercedes Benz Multi-Axle (2+1)",
     departure: "22:30",
     arrival: "09:00",
     from: "Bangalore",
@@ -94,12 +133,17 @@ const mockBuses = [
     duration: "10h 30m",
     price: 1450,
     rating: 4.7,
+    reviewCount: 1823,
     seats: 8,
+    amenities: ["WiFi", "Charging", "AC"],
+    boardingPoints: ["Majestic", "Hebbal", "Yeshwanthpur"],
+    droppingPoints: ["Miyapur", "KPHB", "Paradise"],
+    busType: "sleeper" as const,
   },
   {
     id: 3,
     operator: "Kallada Travels",
-    type: "Volvo A/C Semi Sleeper",
+    type: "Volvo A/C Semi Sleeper (2+2)",
     departure: "20:00",
     arrival: "06:30",
     from: "Bangalore",
@@ -107,7 +151,30 @@ const mockBuses = [
     duration: "10h 30m",
     price: 950,
     rating: 4.2,
+    reviewCount: 3102,
     seats: 22,
+    amenities: ["Charging", "AC"],
+    boardingPoints: ["Majestic", "Silk Board", "BTM Layout"],
+    droppingPoints: ["Dilsukhnagar", "Secunderabad", "Uppal"],
+    busType: "semi-sleeper" as const,
+  },
+  {
+    id: 4,
+    operator: "Orange Travels",
+    type: "Volvo A/C Seater (2+2)",
+    departure: "06:00",
+    arrival: "16:30",
+    from: "Bangalore",
+    to: "Hyderabad",
+    duration: "10h 30m",
+    price: 750,
+    rating: 4.0,
+    reviewCount: 892,
+    seats: 35,
+    amenities: ["AC"],
+    boardingPoints: ["Majestic", "Tin Factory"],
+    droppingPoints: ["Secunderabad", "Jubilee Hills"],
+    busType: "seater" as const,
   },
 ];
 
@@ -118,15 +185,64 @@ export default function Transport() {
   const [travelDate, setTravelDate] = useState<Date>();
   const [passengers, setPassengers] = useState(1);
   const [searched, setSearched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentSort, setCurrentSort] = useState("departure_asc");
+  const [showSeatModal, setShowSeatModal] = useState(false);
+  const [selectedTransport, setSelectedTransport] = useState<{
+    name: string;
+    from: string;
+    to: string;
+    departure: string;
+    arrival: string;
+    price: number;
+  } | null>(null);
+  
+  const [filters, setFilters] = useState({
+    departureTime: [] as string[],
+    priceRange: [0, 5000] as [number, number],
+    trainClasses: [] as string[],
+    busTypes: [] as string[],
+    amenities: [] as string[],
+  });
 
   const handleSearch = () => {
-    setSearched(true);
+    setIsLoading(true);
+    setSearched(false);
+    // Simulate API call
+    setTimeout(() => {
+      setSearched(true);
+      setIsLoading(false);
+    }, 1500);
   };
 
   const swapLocations = () => {
     const temp = from;
     setFrom(to);
     setTo(temp);
+  };
+
+  const handleSelectTrainSeat = (train: typeof mockTrains[0]) => {
+    setSelectedTransport({
+      name: train.name,
+      from: train.from,
+      to: train.to,
+      departure: train.departure,
+      arrival: train.arrival,
+      price: Math.min(...train.classes.map(c => c.price)),
+    });
+    setShowSeatModal(true);
+  };
+
+  const handleSelectBusSeat = (bus: typeof mockBuses[0]) => {
+    setSelectedTransport({
+      name: bus.operator,
+      from: bus.from,
+      to: bus.to,
+      departure: bus.departure,
+      arrival: bus.arrival,
+      price: bus.price,
+    });
+    setShowSeatModal(true);
   };
 
   return (
@@ -271,9 +387,16 @@ export default function Transport() {
                       <Button 
                         className="w-full h-12 bg-coral-gradient"
                         onClick={handleSearch}
+                        disabled={isLoading}
                       >
-                        <Search className="w-5 h-5 mr-2" />
-                        Search
+                        {isLoading ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <>
+                            <Search className="w-5 h-5 mr-2" />
+                            Search
+                          </>
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -283,170 +406,109 @@ export default function Transport() {
           </div>
         </section>
 
+        {/* Loading State */}
+        {isLoading && (
+          <section className="py-12">
+            <div className="container mx-auto px-4">
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                <span className="text-muted-foreground">
+                  Searching for the best {transportType}...
+                </span>
+              </div>
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <Card key={i}>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4">
+                        <Skeleton className="w-14 h-14 rounded-xl" />
+                        <div className="flex-1">
+                          <Skeleton className="h-5 w-48 mb-2" />
+                          <Skeleton className="h-4 w-32" />
+                        </div>
+                        <Skeleton className="h-10 w-32" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Search Results */}
-        {searched && (
+        {searched && !isLoading && (
           <section className="py-12">
             <div className="container mx-auto px-4">
               {transportType === "trains" ? (
                 <>
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-display font-bold">
-                      {mockTrains.length} Trains Found
-                    </h2>
-                    <div className="flex gap-2">
-                      <Badge variant="outline">Departure: Early</Badge>
-                      <Badge variant="outline">Price: Low to High</Badge>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <h2 className="text-2xl font-display font-bold">
+                        {mockTrains.length} Trains Found
+                      </h2>
+                      <Button variant="ghost" size="sm" onClick={handleSearch}>
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        Refresh
+                      </Button>
                     </div>
+                    <Badge variant="secondary" className="hidden md:flex">
+                      Live availability • Updated just now
+                    </Badge>
                   </div>
+
+                  <TransportFilters
+                    transportType="trains"
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    onSortChange={setCurrentSort}
+                    currentSort={currentSort}
+                  />
 
                   <div className="space-y-4">
                     {mockTrains.map((train, index) => (
-                      <motion.div
+                      <TrainCard
                         key={train.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <Card className="hover:shadow-lg transition-shadow">
-                          <CardContent className="p-6">
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                              {/* Train Info */}
-                              <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                                  <Train className="w-6 h-6 text-primary" />
-                                </div>
-                                <div>
-                                  <p className="font-semibold">{train.name}</p>
-                                  <p className="text-sm text-muted-foreground">#{train.number}</p>
-                                </div>
-                              </div>
-
-                              {/* Times */}
-                              <div className="flex items-center gap-8 text-center">
-                                <div>
-                                  <p className="text-2xl font-bold">{train.departure}</p>
-                                  <p className="text-sm text-muted-foreground">{train.from}</p>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                  <p className="text-xs text-muted-foreground">{train.duration}</p>
-                                  <div className="w-24 h-0.5 bg-muted relative my-2">
-                                    <Zap className="w-4 h-4 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                                  </div>
-                                </div>
-                                <div>
-                                  <p className="text-2xl font-bold">{train.arrival}</p>
-                                  <p className="text-sm text-muted-foreground">{train.to}</p>
-                                </div>
-                              </div>
-
-                              {/* Classes */}
-                              <div className="flex gap-2">
-                                {train.classes.map((cls) => (
-                                  <Badge key={cls} variant="outline">{cls}</Badge>
-                                ))}
-                              </div>
-
-                              {/* Price & Book */}
-                              <div className="text-right">
-                                <Badge 
-                                  className={cn(
-                                    "mb-2",
-                                    train.availability === "Available" 
-                                      ? "bg-green-500" 
-                                      : "bg-yellow-500"
-                                  )}
-                                >
-                                  {train.availability}
-                                </Badge>
-                                <p className="text-2xl font-bold text-primary">
-                                  ₹{train.price.toLocaleString()}
-                                </p>
-                                <Button className="mt-2 bg-coral-gradient">
-                                  Book Now
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
+                        train={train}
+                        index={index}
+                        onSelectSeat={handleSelectTrainSeat}
+                      />
                     ))}
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-display font-bold">
-                      {mockBuses.length} Buses Found
-                    </h2>
-                    <div className="flex gap-2">
-                      <Badge variant="outline">Rating: High to Low</Badge>
-                      <Badge variant="outline">Price: Low to High</Badge>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <h2 className="text-2xl font-display font-bold">
+                        {mockBuses.length} Buses Found
+                      </h2>
+                      <Button variant="ghost" size="sm" onClick={handleSearch}>
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        Refresh
+                      </Button>
                     </div>
+                    <Badge variant="secondary" className="hidden md:flex">
+                      Live availability • Updated just now
+                    </Badge>
                   </div>
+
+                  <TransportFilters
+                    transportType="buses"
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    onSortChange={setCurrentSort}
+                    currentSort={currentSort}
+                  />
 
                   <div className="space-y-4">
                     {mockBuses.map((bus, index) => (
-                      <motion.div
+                      <BusCard
                         key={bus.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <Card className="hover:shadow-lg transition-shadow">
-                          <CardContent className="p-6">
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                              {/* Bus Info */}
-                              <div className="flex items-center gap-4 flex-1">
-                                <div className="w-12 h-12 rounded-full bg-teal/10 flex items-center justify-center">
-                                  <Bus className="w-6 h-6 text-teal" />
-                                </div>
-                                <div>
-                                  <p className="font-semibold">{bus.operator}</p>
-                                  <p className="text-sm text-muted-foreground">{bus.type}</p>
-                                  <div className="flex items-center gap-1 mt-1">
-                                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                    <span className="text-sm">{bus.rating}</span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Times */}
-                              <div className="flex items-center gap-8 text-center">
-                                <div>
-                                  <p className="text-2xl font-bold">{bus.departure}</p>
-                                  <p className="text-sm text-muted-foreground">{bus.from}</p>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                  <p className="text-xs text-muted-foreground">{bus.duration}</p>
-                                  <div className="w-24 h-0.5 bg-muted relative my-2">
-                                    <Bus className="w-4 h-4 text-teal absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                                  </div>
-                                </div>
-                                <div>
-                                  <p className="text-2xl font-bold">{bus.arrival}</p>
-                                  <p className="text-sm text-muted-foreground">{bus.to}</p>
-                                </div>
-                              </div>
-
-                              {/* Seats */}
-                              <div className="flex items-center gap-2">
-                                <Clock className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-sm">{bus.seats} seats left</span>
-                              </div>
-
-                              {/* Price & Book */}
-                              <div className="text-right">
-                                <p className="text-2xl font-bold text-primary">
-                                  ₹{bus.price.toLocaleString()}
-                                </p>
-                                <Button className="mt-2 bg-coral-gradient">
-                                  Select Seats
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
+                        bus={bus}
+                        index={index}
+                        onSelectSeat={handleSelectBusSeat}
+                      />
                     ))}
                   </div>
                 </>
@@ -458,6 +520,16 @@ export default function Transport() {
 
       <Footer />
       <AIChatWidget />
+
+      {/* Seat Selection Modal */}
+      {selectedTransport && (
+        <SeatSelectionModal
+          isOpen={showSeatModal}
+          onClose={() => setShowSeatModal(false)}
+          transportType={transportType === "trains" ? "train" : "bus"}
+          transportInfo={selectedTransport}
+        />
+      )}
     </div>
   );
 }
