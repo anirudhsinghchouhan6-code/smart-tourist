@@ -3,14 +3,15 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AIChatWidget } from "@/components/AIChatWidget";
+import { CityAutocomplete } from "@/components/CityAutocomplete";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { 
   Plane, 
   Calendar as CalendarIcon, 
@@ -24,6 +25,7 @@ import {
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import heroFlights from "@/assets/hero-flights.jpg";
+
 
 const mockFlights = [
   {
@@ -159,15 +161,13 @@ export default function Flights() {
                     {/* From */}
                     <div className="md:col-span-3">
                       <Label className="text-sm text-muted-foreground mb-2 block">From</Label>
-                      <div className="relative">
-                        <Plane className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
-                        <Input 
-                          value={from}
-                          onChange={(e) => setFrom(e.target.value)}
-                          className="pl-10 h-12"
-                          placeholder="Departure city"
-                        />
-                      </div>
+                      <CityAutocomplete
+                        value={from}
+                        onChange={setFrom}
+                        placeholder="Departure city"
+                        icon="plane"
+                        iconColor="text-primary"
+                      />
                     </div>
 
                     {/* Swap Button */}
@@ -185,15 +185,13 @@ export default function Flights() {
                     {/* To */}
                     <div className="md:col-span-3">
                       <Label className="text-sm text-muted-foreground mb-2 block">To</Label>
-                      <div className="relative">
-                        <Plane className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal rotate-90" />
-                        <Input 
-                          value={to}
-                          onChange={(e) => setTo(e.target.value)}
-                          className="pl-10 h-12"
-                          placeholder="Arrival city"
-                        />
-                      </div>
+                      <CityAutocomplete
+                        value={to}
+                        onChange={setTo}
+                        placeholder="Arrival city"
+                        icon="plane"
+                        iconColor="text-teal"
+                      />
                     </div>
 
                     {/* Departure Date */}

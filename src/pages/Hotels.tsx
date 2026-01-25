@@ -3,16 +3,16 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AIChatWidget } from "@/components/AIChatWidget";
+import { CityAutocomplete } from "@/components/CityAutocomplete";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import { 
-  Hotel, 
   Calendar as CalendarIcon, 
   Users, 
   Search,
@@ -154,15 +154,13 @@ export default function Hotels() {
                     {/* Destination */}
                     <div className="md:col-span-3">
                       <Label className="text-sm text-muted-foreground mb-2 block">Destination</Label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
-                        <Input 
-                          value={destination}
-                          onChange={(e) => setDestination(e.target.value)}
-                          className="pl-10 h-12"
-                          placeholder="Where are you going?"
-                        />
-                      </div>
+                      <CityAutocomplete
+                        value={destination}
+                        onChange={setDestination}
+                        placeholder="Where are you going?"
+                        icon="map"
+                        iconColor="text-primary"
+                      />
                     </div>
 
                     {/* Check In */}
