@@ -132,13 +132,13 @@ export default function Hotels() {
               className="text-center mb-8"
             >
               <Badge className="mb-4 bg-teal/20 text-teal border-teal/30">
-                Beach Resorts • Mountain Lodges • City Hotels • Overwater Villas
+                Ratlam • Agra • Hyderabad • Chennai • Jaipur • Udaipur • Goa
               </Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4">
                 Find Perfect <span className="text-gradient">Hotels</span>
               </h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Discover handpicked hotels across multiple destinations with best price guarantee
+                Discover handpicked hotels across multiple destinations — from luxury palaces to boutique stays
               </p>
             </motion.div>
 

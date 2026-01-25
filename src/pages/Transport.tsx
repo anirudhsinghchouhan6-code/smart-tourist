@@ -153,13 +153,13 @@ export default function Transport() {
               className="text-center mb-8"
             >
               <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">
-                Rajdhani • Shatabdi • Volvo • Premium Buses
+                Delhi • Ratlam • Mumbai • Bhopal • Jaipur • Ahmedabad • Indore
               </Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4">
                 Book <span className="text-gradient">Buses & Trains</span>
               </h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Travel to multiple destinations with the best ground transport options
+                Travel to multiple destinations — Rajdhani, Shatabdi, Volvo & premium buses at best prices
               </p>
             </motion.div>
 
