@@ -127,13 +127,13 @@ export default function Flights() {
               className="text-center mb-8"
             >
               <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">
-                100+ Airlines • Multiple Destinations
+                Delhi • Mumbai • Paris • Singapore • Bali • Maldives • Dubai
               </Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4">
                 Book <span className="text-gradient">Flights</span> at Best Prices
               </h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Compare and book flights to multiple destinations worldwide with exclusive deals
+                Fly to multiple destinations worldwide — compare 100+ airlines for the best deals
               </p>
             </motion.div>
 
