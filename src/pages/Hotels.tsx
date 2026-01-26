@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AIChatWidget } from "@/components/AIChatWidget";
 import { CityAutocomplete } from "@/components/CityAutocomplete";
+import { GuestRoomSelector } from "@/components/hotels/GuestRoomSelector";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,10 +12,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
 import { 
   Calendar as CalendarIcon, 
-  Users, 
   Search,
   Star,
   MapPin,
@@ -90,7 +89,9 @@ export default function Hotels() {
   const [destination, setDestination] = useState("Ratlam");
   const [checkIn, setCheckIn] = useState<Date>();
   const [checkOut, setCheckOut] = useState<Date>();
-  const [guests, setGuests] = useState(2);
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
+  const [infants, setInfants] = useState(0);
   const [rooms, setRooms] = useState(1);
   const [priceRange, setPriceRange] = useState([0, 50000]);
   const [searched, setSearched] = useState(false);
@@ -220,14 +221,16 @@ export default function Hotels() {
                     {/* Guests & Rooms */}
                     <div className="md:col-span-3">
                       <Label className="text-sm text-muted-foreground mb-2 block">Guests & Rooms</Label>
-                      <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                        <Input 
-                          value={`${guests} Guests, ${rooms} Room`}
-                          readOnly
-                          className="pl-10 h-12 cursor-pointer"
-                        />
-                      </div>
+                      <GuestRoomSelector
+                        adults={adults}
+                        children={children}
+                        infants={infants}
+                        rooms={rooms}
+                        onAdultsChange={setAdults}
+                        onChildrenChange={setChildren}
+                        onInfantsChange={setInfants}
+                        onRoomsChange={setRooms}
+                      />
                     </div>
 
                     {/* Search Button */}
@@ -345,7 +348,7 @@ export default function Hotels() {
                                   
                                   {/* Rating */}
                                   <div className="flex items-center gap-2 mb-4">
-                                    <div className="flex items-center gap-1 bg-green-500/10 text-green-600 px-2 py-1 rounded">
+                                    <div className="flex items-center gap-1 bg-teal/10 text-teal px-2 py-1 rounded">
                                       <Star className="w-4 h-4 fill-current" />
                                       <span className="font-semibold">{hotel.rating}</span>
                                     </div>
