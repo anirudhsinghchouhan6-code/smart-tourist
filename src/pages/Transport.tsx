@@ -29,7 +29,8 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import heroTransport from "@/assets/hero-transport.jpg";
+import heroBus from "@/assets/hero-bus.jpg";
+import heroTrain from "@/assets/hero-train.jpg";
 
 const mockTrains = [
   {
@@ -255,8 +256,8 @@ export default function Transport() {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img 
-              src={heroTransport} 
-              alt="Buses and trains to multiple destinations" 
+              src={transportType === "trains" ? heroTrain : heroBus} 
+              alt={transportType === "trains" ? "Indian trains" : "Luxury buses"} 
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
