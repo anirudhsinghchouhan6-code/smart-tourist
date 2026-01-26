@@ -2,62 +2,99 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { DestinationCard } from "./DestinationCard";
-import { Compass, Mountain, TreePine, Landmark, Sparkles } from "lucide-react";
+import { Compass, Mountain, TreePine, Landmark, Sparkles, Waves, Sun } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import thailandImg from "@/assets/destination-thailand.jpg";
-import singaporeImg from "@/assets/destination-singapore.jpg";
-import maldivesImg from "@/assets/destination-maldives.jpg";
-import parisImg from "@/assets/destination-paris.jpg";
-import georgiaImg from "@/assets/destination-georgia.jpg";
+import goaImg from "@/assets/destination-goa.jpg";
+import jaipurImg from "@/assets/destination-jaipur.jpg";
+import keralaImg from "@/assets/destination-kerala.jpg";
+import ladakhImg from "@/assets/destination-ladakh.jpg";
+import varanasiImg from "@/assets/destination-varanasi.jpg";
+import manaliImg from "@/assets/destination-manali.jpg";
+import andamanImg from "@/assets/destination-andaman.jpg";
+import udaipurImg from "@/assets/destination-udaipur.jpg";
 
 const categories = [
   { id: "all", name: "All", icon: Compass },
   { id: "adventure", name: "Adventure", icon: Mountain },
   { id: "nature", name: "Nature", icon: TreePine },
   { id: "heritage", name: "Heritage", icon: Landmark },
+  { id: "beach", name: "Beach", icon: Waves },
+  { id: "spiritual", name: "Spiritual", icon: Sun },
 ];
 
 const destinations = [
   {
     id: 1,
-    name: "Thailand",
-    country: "Southeast Asia",
-    image: thailandImg,
-    category: "adventure",
+    name: "Goa",
+    country: "India",
+    image: goaImg,
+    category: "beach",
     rating: 4.8,
+    state: "Goa",
   },
   {
     id: 2,
-    name: "Singapore",
-    country: "Southeast Asia",
-    image: singaporeImg,
-    category: "adventure",
+    name: "Jaipur",
+    country: "India",
+    image: jaipurImg,
+    category: "heritage",
     rating: 4.9,
+    state: "Rajasthan",
   },
   {
     id: 3,
-    name: "Maldives",
-    country: "South Asia",
-    image: maldivesImg,
+    name: "Kerala",
+    country: "India",
+    image: keralaImg,
     category: "nature",
     rating: 4.9,
+    state: "Kerala",
   },
   {
     id: 4,
-    name: "Paris",
-    country: "France",
-    image: parisImg,
-    category: "heritage",
-    rating: 4.7,
+    name: "Ladakh",
+    country: "India",
+    image: ladakhImg,
+    category: "adventure",
+    rating: 4.8,
+    state: "Ladakh",
   },
   {
     id: 5,
-    name: "Georgia",
-    country: "Caucasus",
-    image: georgiaImg,
+    name: "Varanasi",
+    country: "India",
+    image: varanasiImg,
+    category: "spiritual",
+    rating: 4.7,
+    state: "Uttar Pradesh",
+  },
+  {
+    id: 6,
+    name: "Manali",
+    country: "India",
+    image: manaliImg,
     category: "adventure",
     rating: 4.8,
+    state: "Himachal Pradesh",
+  },
+  {
+    id: 7,
+    name: "Andaman",
+    country: "India",
+    image: andamanImg,
+    category: "beach",
+    rating: 4.9,
+    state: "Andaman & Nicobar",
+  },
+  {
+    id: 8,
+    name: "Udaipur",
+    country: "India",
+    image: udaipurImg,
+    category: "heritage",
+    rating: 4.8,
+    state: "Rajasthan",
   },
 ];
 
@@ -81,11 +118,11 @@ export function DestinationsSection() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-            Places You'll Brag About Forever
+            Explore Incredible India
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            From jaw-dropping landmarks to hidden gems, these are the kind of
-            spots that turn into stories, selfies, and serious travel envy.
+            From the snow-capped Himalayas to tropical beaches, ancient temples to vibrant cities — 
+            discover the diverse beauty of India's most stunning destinations.
           </p>
         </motion.div>
 
@@ -107,7 +144,7 @@ export function DestinationsSection() {
         {/* Destinations Grid */}
         <motion.div
           layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
           {filteredDestinations.map((destination, index) => (
             <motion.div
@@ -118,7 +155,11 @@ export function DestinationsSection() {
               transition={{ delay: index * 0.1 }}
             >
               <DestinationCard
-                {...destination}
+                name={destination.name}
+                country={destination.state ? `${destination.state}, ${destination.country}` : destination.country}
+                image={destination.image}
+                category={destination.category}
+                rating={destination.rating}
                 onClick={() => navigate(`/destination/${destination.id}`)}
               />
             </motion.div>
@@ -138,7 +179,7 @@ export function DestinationsSection() {
             onClick={() => navigate("/trip-planner")}
           >
             <Sparkles className="w-5 h-5 mr-2" />
-            Create a Trip Now!
+            Plan Your India Trip Now!
           </Button>
         </motion.div>
       </div>
