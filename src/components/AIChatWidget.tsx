@@ -12,11 +12,14 @@ import {
   Plane,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
+const MAX_MESSAGE_LENGTH = 4000;
 
 export function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,25 +46,39 @@ export function AIChatWidget() {
   }, [messages, scrollToBottom]);
 
   const streamChat = async (userMessages: Message[]) => {
+    // Get the current session token
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session?.access_token) {
+      throw new Error("Please sign in to use the AI travel assistant.");
+    }
+
     const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/travel-assistant`;
 
     const resp = await fetch(CHAT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        Authorization: `Bearer ${session.access_token}`,
       },
       body: JSON.stringify({ messages: userMessages }),
     });
 
+    if (resp.status === 401) {
+      throw new Error("Please sign in to use the AI travel assistant.");
+    }
     if (resp.status === 429) {
       throw new Error("Rate limit exceeded. Please wait a moment.");
     }
     if (resp.status === 402) {
       throw new Error("Service temporarily unavailable.");
     }
+    if (resp.status === 400) {
+      const errorData = await resp.json();
+      throw new Error(errorData.error || "Invalid request. Please try again.");
+    }
     if (!resp.ok || !resp.body) {
-      throw new Error("Failed to get response");
+      throw new Error("Failed to get response. Please try again.");
     }
 
     return resp;
@@ -70,7 +87,18 @@ export function AIChatWidget() {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: "user", content: input.trim() };
+    // Client-side input validation
+    const trimmedInput = input.trim();
+    if (trimmedInput.length > MAX_MESSAGE_LENGTH) {
+      toast({
+        title: "Message too long",
+        description: `Please keep your message under ${MAX_MESSAGE_LENGTH} characters.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const userMessage: Message = { role: "user", content: trimmedInput };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
