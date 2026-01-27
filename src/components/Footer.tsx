@@ -46,7 +46,7 @@ export function Footer() {
               <div className="w-10 h-10 rounded-xl bg-coral-gradient flex items-center justify-center">
                 <Plane className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-display font-bold">TravelWise</span>
+              <span className="text-xl font-display font-bold">Smart Tourist</span>
             </Link>
             <p className="text-white/60 mb-6 max-w-xs">
               AI-powered travel planning that makes every journey unforgettable.
@@ -134,7 +134,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-white/60 text-sm">
-            © {new Date().getFullYear()} TravelWise. All rights reserved.
+            © {new Date().getFullYear()} Smart Tourist. All rights reserved.
           </p>
           <p className="text-white/40 text-sm">
             Made with ❤️ for travelers worldwide
