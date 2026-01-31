@@ -10,9 +10,12 @@ import {
   Sparkles,
   Loader2,
   Plane,
+  LogIn,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { User } from "@supabase/supabase-js";
 
 interface Message {
   role: "user" | "assistant";
@@ -32,8 +35,26 @@ export function AIChatWidget() {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Check authentication status
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setIsCheckingAuth(false);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setIsCheckingAuth(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const scrollToBottom = useCallback(() => {
     if (scrollRef.current) {
@@ -216,77 +237,107 @@ export function AIChatWidget() {
 
             {/* Messages */}
             <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-              <div className="space-y-4">
-                {messages.map((message, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex ${
-                      message.role === "user" ? "justify-end" : "justify-start"
-                    }`}
+              {isCheckingAuth ? (
+                <div className="flex items-center justify-center h-full">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                </div>
+              ) : !user ? (
+                <div className="flex flex-col items-center justify-center h-full text-center p-6">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <LogIn className="w-8 h-8 text-primary" />
+                  </div>
+                  <h4 className="font-display font-bold text-lg mb-2">
+                    Sign in to Chat
+                  </h4>
+                  <p className="text-muted-foreground text-sm mb-6">
+                    Please sign in to use Kaira, your AI travel assistant. Get personalized trip recommendations and itineraries!
+                  </p>
+                  <Button
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate("/auth");
+                    }}
+                    className="bg-coral-gradient hover:opacity-90"
                   >
-                    <div
-                      className={`max-w-[85%] p-3 rounded-2xl ${
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground rounded-br-md"
-                          : "bg-muted rounded-bl-md"
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Sign In
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {messages.map((message, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`flex ${
+                        message.role === "user" ? "justify-end" : "justify-start"
                       }`}
                     >
-                      {message.role === "assistant" && (
-                        <div className="flex items-center gap-2 mb-1">
-                          <Plane className="w-3 h-3 text-primary" />
-                          <span className="text-xs font-medium text-primary">
-                            Kaira
-                          </span>
-                        </div>
-                      )}
-                      <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                        {message.content}
-                      </p>
+                      <div
+                        className={`max-w-[85%] p-3 rounded-2xl ${
+                          message.role === "user"
+                            ? "bg-primary text-primary-foreground rounded-br-md"
+                            : "bg-muted rounded-bl-md"
+                        }`}
+                      >
+                        {message.role === "assistant" && (
+                          <div className="flex items-center gap-2 mb-1">
+                            <Plane className="w-3 h-3 text-primary" />
+                            <span className="text-xs font-medium text-primary">
+                              Kaira
+                            </span>
+                          </div>
+                        )}
+                        <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                          {message.content}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                  {isLoading && messages[messages.length - 1]?.content === "" && (
+                    <div className="flex justify-start">
+                      <div className="bg-muted p-3 rounded-2xl rounded-bl-md">
+                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                      </div>
                     </div>
-                  </motion.div>
-                ))}
-                {isLoading && messages[messages.length - 1]?.content === "" && (
-                  <div className="flex justify-start">
-                    <div className="bg-muted p-3 rounded-2xl rounded-bl-md">
-                      <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                    </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </ScrollArea>
 
             {/* Input */}
-            <div className="p-4 border-t">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSend();
-                }}
-                className="flex gap-2"
-              >
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about destinations, itineraries..."
-                  className="flex-1"
-                  disabled={isLoading}
-                />
-                <Button
-                  type="submit"
-                  size="icon"
-                  disabled={!input.trim() || isLoading}
-                  className="bg-coral-gradient hover:opacity-90"
+            {user && (
+              <div className="p-4 border-t">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSend();
+                  }}
+                  className="flex gap-2"
                 >
-                  {isLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4" />
-                  )}
-                </Button>
-              </form>
-            </div>
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ask about destinations, itineraries..."
+                    className="flex-1"
+                    disabled={isLoading}
+                  />
+                  <Button
+                    type="submit"
+                    size="icon"
+                    disabled={!input.trim() || isLoading}
+                    className="bg-coral-gradient hover:opacity-90"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Send className="w-4 h-4" />
+                    )}
+                  </Button>
+                </form>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
