@@ -21,11 +21,13 @@ import {
   Car,
   Coffee,
   Waves,
-  Filter
+  Filter,
+  Loader2
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, addDays, differenceInDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import heroHotels from "@/assets/hero-hotels.jpg";
+import { useBooking } from "@/hooks/useBooking";
 
 const mockHotels = [
   {
@@ -96,6 +98,7 @@ export default function Hotels() {
   const [priceRange, setPriceRange] = useState([0, 50000]);
   const [searched, setSearched] = useState(false);
   const [selectedStars, setSelectedStars] = useState<number[]>([3, 4, 5]);
+  const { createBooking, isBooking } = useBooking();
 
   const handleSearch = () => {
     setSearched(true);
@@ -107,6 +110,34 @@ export default function Hotels() {
     } else {
       setSelectedStars([...selectedStars, star]);
     }
+  };
+
+  const handleBookHotel = async (hotel: typeof mockHotels[0]) => {
+    const checkInDate = checkIn || addDays(new Date(), 7);
+    const checkOutDate = checkOut || addDays(checkInDate, 2);
+    const nights = Math.max(1, differenceInDays(checkOutDate, checkInDate));
+    const totalGuests = adults + children;
+    
+    await createBooking({
+      booking_type: "hotel",
+      travel_date: format(checkInDate, "yyyy-MM-dd"),
+      travelers_count: totalGuests,
+      total_amount: hotel.price * nights * rooms,
+      details: {
+        hotel_name: hotel.name,
+        location: hotel.location,
+        check_in: format(checkInDate, "yyyy-MM-dd"),
+        check_out: format(checkOutDate, "yyyy-MM-dd"),
+        nights,
+        rooms,
+        adults,
+        children,
+        infants,
+        price_per_night: hotel.price,
+        star_rating: hotel.stars,
+        amenities: hotel.amenities,
+      },
+    });
   };
 
   return (
@@ -380,7 +411,14 @@ export default function Hotels() {
                                     ₹{hotel.price.toLocaleString()}
                                   </p>
                                   <p className="text-xs text-muted-foreground mb-3">per night</p>
-                                  <Button className="bg-coral-gradient">
+                                  <Button 
+                                    className="bg-coral-gradient"
+                                    onClick={() => handleBookHotel(hotel)}
+                                    disabled={isBooking}
+                                  >
+                                    {isBooking ? (
+                                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                    ) : null}
                                     Book Now
                                   </Button>
                                 </div>

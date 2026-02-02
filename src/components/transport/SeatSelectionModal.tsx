@@ -9,7 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { User, X, ChevronDown, ChevronUp } from "lucide-react";
+import { User, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { useBooking } from "@/hooks/useBooking";
+import { format, addDays } from "date-fns";
 
 interface SeatSelectionModalProps {
   isOpen: boolean;
@@ -43,6 +45,33 @@ export function SeatSelectionModal({
 }: SeatSelectionModalProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [showUpperDeck, setShowUpperDeck] = useState(true);
+  const { createBooking, isBooking } = useBooking();
+
+  const handleBookTransport = async () => {
+    const travelDate = addDays(new Date(), 3); // Default to 3 days from now
+    
+    const result = await createBooking({
+      booking_type: "transport",
+      travel_date: format(travelDate, "yyyy-MM-dd"),
+      travelers_count: selectedSeats.length,
+      total_amount: totalPrice,
+      details: {
+        transport_type: transportType,
+        transport_name: transportInfo.name,
+        from: transportInfo.from,
+        to: transportInfo.to,
+        departure: transportInfo.departure,
+        arrival: transportInfo.arrival,
+        selected_seats: selectedSeats,
+        price_per_seat: transportInfo.price,
+      },
+    });
+
+    if (result) {
+      setSelectedSeats([]);
+      onClose();
+    }
+  };
 
   // Generate mock seats
   const generateSeats = (): { lower: Seat[][]; upper: Seat[][] } => {
@@ -320,9 +349,13 @@ export function SeatSelectionModal({
               
               <Button 
                 className="w-full bg-coral-gradient"
-                disabled={selectedSeats.length === 0}
+                disabled={selectedSeats.length === 0 || isBooking}
+                onClick={handleBookTransport}
               >
-                Continue to Payment
+                {isBooking ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : null}
+                Book Now
               </Button>
             </div>
           </div>
