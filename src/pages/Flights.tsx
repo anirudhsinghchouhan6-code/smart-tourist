@@ -20,11 +20,13 @@ import {
   Search,
   Clock,
   Luggage,
-  Star
+  Star,
+  Loader2
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import heroFlights from "@/assets/hero-flights.jpg";
+import { useBooking } from "@/hooks/useBooking";
 
 
 const mockFlights = [
@@ -94,6 +96,7 @@ export default function Flights() {
   const [returnDate, setReturnDate] = useState<Date>();
   const [passengers, setPassengers] = useState(1);
   const [searched, setSearched] = useState(false);
+  const { createBooking, isBooking } = useBooking();
 
   const handleSearch = () => {
     setSearched(true);
@@ -103,6 +106,27 @@ export default function Flights() {
     const temp = from;
     setFrom(to);
     setTo(temp);
+  };
+
+  const handleBookFlight = async (flight: typeof mockFlights[0]) => {
+    const travelDate = departureDate || addDays(new Date(), 7);
+    
+    await createBooking({
+      booking_type: "flight",
+      travel_date: format(travelDate, "yyyy-MM-dd"),
+      travelers_count: passengers,
+      total_amount: flight.price * passengers,
+      details: {
+        airline: flight.airline,
+        from: from,
+        to: to,
+        departure: flight.departure,
+        arrival: flight.arrival,
+        duration: flight.duration,
+        stops: flight.stops,
+        price_per_person: flight.price,
+      },
+    });
   };
 
   return (
@@ -332,7 +356,14 @@ export default function Flights() {
                             <p className="text-2xl font-bold text-primary">
                               ₹{flight.price.toLocaleString()}
                             </p>
-                            <Button className="mt-2 bg-coral-gradient">
+                            <Button 
+                              className="mt-2 bg-coral-gradient"
+                              onClick={() => handleBookFlight(flight)}
+                              disabled={isBooking}
+                            >
+                              {isBooking ? (
+                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                              ) : null}
                               Book Now
                             </Button>
                           </div>

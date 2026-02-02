@@ -23,8 +23,11 @@ import {
   Share2,
   ArrowLeft,
   Check,
-  Info
+  Info,
+  Loader2
 } from "lucide-react";
+import { useBooking } from "@/hooks/useBooking";
+import { format, addDays } from "date-fns";
 
 import goaImg from "@/assets/destination-goa.jpg";
 import jaipurImg from "@/assets/destination-jaipur.jpg";
@@ -338,6 +341,29 @@ export default function DestinationDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const destination = destinationsData[id || "1"];
+  const { createBooking, isBooking } = useBooking();
+
+  const handleBookPackage = async (pkg: { name: string; duration: string; price: number; includes: string[] }) => {
+    const travelDate = addDays(new Date(), 14); // Default to 2 weeks from now
+    const durationMatch = pkg.duration.match(/(\d+)N/);
+    const nights = durationMatch ? parseInt(durationMatch[1]) : 3;
+    
+    await createBooking({
+      booking_type: "package",
+      travel_date: format(travelDate, "yyyy-MM-dd"),
+      travelers_count: 1,
+      total_amount: pkg.price,
+      details: {
+        package_name: pkg.name,
+        destination: destination.name,
+        state: destination.state,
+        duration: pkg.duration,
+        nights,
+        includes: pkg.includes,
+        price_per_person: pkg.price,
+      },
+    });
+  };
 
   if (!destination) {
     return (
@@ -585,7 +611,14 @@ export default function DestinationDetail() {
                             </div>
                           ))}
                         </div>
-                          <Button className="w-full bg-coral-gradient">
+                          <Button 
+                            className="w-full bg-coral-gradient"
+                            onClick={() => handleBookPackage(pkg)}
+                            disabled={isBooking}
+                          >
+                            {isBooking ? (
+                              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                            ) : null}
                             Book Now
                           </Button>
                         </CardContent>
