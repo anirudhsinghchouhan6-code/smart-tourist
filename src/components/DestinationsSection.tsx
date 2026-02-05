@@ -13,6 +13,11 @@ import varanasiImg from "@/assets/destination-varanasi.jpg";
 import manaliImg from "@/assets/destination-manali.jpg";
 import andamanImg from "@/assets/destination-andaman.jpg";
 import udaipurImg from "@/assets/destination-udaipur.jpg";
+import shimlaImg from "@/assets/destination-shimla.jpg";
+import rishikeshImg from "@/assets/destination-rishikesh.jpg";
+import darjeelingImg from "@/assets/destination-darjeeling.jpg";
+import agraImg from "@/assets/destination-agra.jpg";
+import mumbaiImg from "@/assets/destination-mumbai.jpg";
 
 const categories = [
   { id: "all", name: "All", icon: Compass },
@@ -21,6 +26,8 @@ const categories = [
   { id: "heritage", name: "Heritage", icon: Landmark },
   { id: "beach", name: "Beach", icon: Waves },
   { id: "spiritual", name: "Spiritual", icon: Sun },
+  { id: "hill-station", name: "Hill Station", icon: Mountain },
+  { id: "urban", name: "Urban", icon: Landmark },
 ];
 
 const destinations = [
@@ -95,6 +102,51 @@ const destinations = [
     category: "heritage",
     rating: 4.8,
     state: "Rajasthan",
+  },
+  {
+    id: 9,
+    name: "Shimla",
+    country: "India",
+    image: shimlaImg,
+    category: "hill-station",
+    rating: 4.7,
+    state: "Himachal Pradesh",
+  },
+  {
+    id: 10,
+    name: "Rishikesh",
+    country: "India",
+    image: rishikeshImg,
+    category: "spiritual",
+    rating: 4.8,
+    state: "Uttarakhand",
+  },
+  {
+    id: 11,
+    name: "Darjeeling",
+    country: "India",
+    image: darjeelingImg,
+    category: "hill-station",
+    rating: 4.8,
+    state: "West Bengal",
+  },
+  {
+    id: 12,
+    name: "Agra",
+    country: "India",
+    image: agraImg,
+    category: "heritage",
+    rating: 4.9,
+    state: "Uttar Pradesh",
+  },
+  {
+    id: 13,
+    name: "Mumbai",
+    country: "India",
+    image: mumbaiImg,
+    category: "urban",
+    rating: 4.6,
+    state: "Maharashtra",
   },
 ];
 

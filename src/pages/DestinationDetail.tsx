@@ -37,6 +37,11 @@ import varanasiImg from "@/assets/destination-varanasi.jpg";
 import manaliImg from "@/assets/destination-manali.jpg";
 import andamanImg from "@/assets/destination-andaman.jpg";
 import udaipurImg from "@/assets/destination-udaipur.jpg";
+import shimlaImg from "@/assets/destination-shimla.jpg";
+import rishikeshImg from "@/assets/destination-rishikesh.jpg";
+import darjeelingImg from "@/assets/destination-darjeeling.jpg";
+import agraImg from "@/assets/destination-agra.jpg";
+import mumbaiImg from "@/assets/destination-mumbai.jpg";
 import { DestinationMap } from "@/components/DestinationMap";
 
 const destinationsData: Record<string, any> = {
@@ -343,6 +348,196 @@ const destinationsData: Record<string, any> = {
       winter: "10-25°C (Pleasant & Ideal)",
     },
     coordinates: { latitude: 24.5854, longitude: 73.7125 }
+  },
+  "9": {
+    id: 9,
+    name: "Shimla",
+    state: "Himachal Pradesh",
+    country: "India",
+    image: shimlaImg,
+    category: "hill-station",
+    rating: 4.7,
+    reviewCount: 11800,
+    bestTime: "March - June, December - February",
+    duration: "3-5 Days",
+    startingPrice: 8999,
+    highlights: ["Mall Road", "Ridge", "Jakhu Temple", "Toy Train", "Colonial Architecture", "Kufri"],
+    description: "The Queen of Hill Stations with stunning colonial architecture and panoramic Himalayan views. Shimla offers the perfect escape from summer heat.",
+    overview: "Shimla, the capital of Himachal Pradesh, was the summer capital of British India. Known for its Victorian architecture, pleasant weather, and stunning views of snow-capped mountains, it's one of India's most popular hill stations.",
+    activities: [
+      { name: "Mall Road Walk", icon: Camera, description: "Stroll along the pedestrian-only shopping street lined with colonial buildings" },
+      { name: "Toy Train Ride", icon: Camera, description: "Experience the UNESCO heritage Kalka-Shimla Railway" },
+      { name: "Jakhu Temple Trek", icon: Camera, description: "Climb to the famous Hanuman temple with panoramic city views" },
+      { name: "Kufri Adventure", icon: Camera, description: "Horse riding, skiing in winter, and adventure activities" },
+    ],
+    packages: [
+      { name: "Hill Station Escape", duration: "3N/4D", price: 8999, includes: ["Stay", "Breakfast", "Sightseeing"] },
+      { name: "Shimla Complete", duration: "4N/5D", price: 14999, includes: ["Stay", "All Meals", "Toy Train", "Kufri Trip"] },
+      { name: "Luxury Hills", duration: "5N/6D", price: 28999, includes: ["Heritage Hotel", "All Inclusive", "Private Guide", "Spa"] },
+    ],
+    howToReach: {
+      byAir: "Shimla Airport (SLV) - 23 km from city, or Chandigarh (117 km)",
+      byTrain: "Kalka Junction, then Toy Train to Shimla (96 km scenic journey)",
+      byRoad: "Well connected to Delhi (350 km), Chandigarh (117 km)",
+    },
+    weather: {
+      summer: "15-25°C (Pleasant)",
+      monsoon: "12-20°C (Moderate Rainfall)",
+      winter: "0-10°C (Cold, Snowfall)",
+    },
+    coordinates: { latitude: 31.1048, longitude: 77.1734 }
+  },
+  "10": {
+    id: 10,
+    name: "Rishikesh",
+    state: "Uttarakhand",
+    country: "India",
+    image: rishikeshImg,
+    category: "spiritual",
+    rating: 4.8,
+    reviewCount: 14200,
+    bestTime: "September - May",
+    duration: "3-5 Days",
+    startingPrice: 6999,
+    highlights: ["Laxman Jhula", "Ganga Aarti", "River Rafting", "Yoga & Meditation", "Beatles Ashram", "Bungee Jumping"],
+    description: "The Yoga Capital of the World nestled in the foothills of the Himalayas. Rishikesh offers spirituality and adventure in perfect harmony.",
+    overview: "Rishikesh, located on the banks of the holy Ganges, is a spiritual hub and adventure destination. Known as the birthplace of yoga, it attracts seekers from around the world while offering thrilling activities like white water rafting.",
+    activities: [
+      { name: "River Rafting", icon: Camera, description: "White water rafting on the Ganges from Grade I to IV rapids" },
+      { name: "Yoga & Meditation", icon: Camera, description: "Join authentic yoga sessions at ashrams along the riverbank" },
+      { name: "Ganga Aarti", icon: Camera, description: "Witness the mesmerizing evening prayer ceremony at Triveni Ghat" },
+      { name: "Adventure Sports", icon: Camera, description: "Bungee jumping, cliff jumping, and flying fox" },
+    ],
+    packages: [
+      { name: "Spiritual Retreat", duration: "3N/4D", price: 6999, includes: ["Ashram Stay", "Yoga Sessions", "Aarti", "Rafting"] },
+      { name: "Adventure & Soul", duration: "4N/5D", price: 12999, includes: ["Stay", "All Meals", "Rafting", "Bungee", "Camping"] },
+      { name: "Wellness Escape", duration: "6N/7D", price: 24999, includes: ["Luxury Resort", "Spa", "Yoga Teacher Training", "All Inclusive"] },
+    ],
+    howToReach: {
+      byAir: "Dehradun Airport (DED) - 35 km from Rishikesh",
+      byTrain: "Rishikesh Railway Station or Haridwar Junction (25 km)",
+      byRoad: "Well connected to Delhi (240 km), Haridwar (25 km)",
+    },
+    weather: {
+      summer: "25-35°C (Hot)",
+      monsoon: "20-30°C (Heavy Rainfall, Rafting Closed)",
+      winter: "10-20°C (Pleasant & Ideal)",
+    },
+    coordinates: { latitude: 30.0869, longitude: 78.2676 }
+  },
+  "11": {
+    id: 11,
+    name: "Darjeeling",
+    state: "West Bengal",
+    country: "India",
+    image: darjeelingImg,
+    category: "hill-station",
+    rating: 4.8,
+    reviewCount: 9600,
+    bestTime: "March - May, October - December",
+    duration: "3-5 Days",
+    startingPrice: 9999,
+    highlights: ["Tea Gardens", "Toy Train", "Tiger Hill Sunrise", "Kanchenjunga Views", "Batasia Loop", "Monasteries"],
+    description: "The Queen of the Hills famous for world-renowned tea, stunning Himalayan views, and the charming heritage toy train.",
+    overview: "Darjeeling, perched at 2,042 meters in the Eastern Himalayas, is renowned for its tea plantations, the Darjeeling Himalayan Railway, and spectacular views of Mount Kanchenjunga. The colonial-era hill station retains its old-world charm.",
+    activities: [
+      { name: "Tea Garden Tours", icon: Camera, description: "Visit famous tea estates and learn about tea processing" },
+      { name: "Toy Train Journey", icon: Camera, description: "Ride the UNESCO World Heritage Darjeeling Himalayan Railway" },
+      { name: "Tiger Hill Sunrise", icon: Camera, description: "Witness spectacular sunrise over Kanchenjunga peak" },
+      { name: "Monastery Visits", icon: Camera, description: "Explore Ghoom Monastery and Peace Pagoda" },
+    ],
+    packages: [
+      { name: "Tea Trails", duration: "3N/4D", price: 9999, includes: ["Stay", "Breakfast", "Tea Tour", "Toy Train"] },
+      { name: "Darjeeling Discovery", duration: "4N/5D", price: 16999, includes: ["Stay", "All Meals", "Tiger Hill", "Full Sightseeing"] },
+      { name: "Heritage Experience", duration: "5N/6D", price: 32999, includes: ["Heritage Hotel", "All Inclusive", "Private Tours", "Tea Tasting"] },
+    ],
+    howToReach: {
+      byAir: "Bagdogra Airport (IXB) - 90 km from Darjeeling",
+      byTrain: "New Jalpaiguri (NJP) - 88 km, then by road or toy train",
+      byRoad: "Well connected to Siliguri (80 km), Gangtok (100 km)",
+    },
+    weather: {
+      summer: "12-18°C (Pleasant)",
+      monsoon: "15-20°C (Heavy Rainfall)",
+      winter: "2-10°C (Cold, Clear Views)",
+    },
+    coordinates: { latitude: 27.0410, longitude: 88.2663 }
+  },
+  "12": {
+    id: 12,
+    name: "Agra",
+    state: "Uttar Pradesh",
+    country: "India",
+    image: agraImg,
+    category: "heritage",
+    rating: 4.9,
+    reviewCount: 25000,
+    bestTime: "October - March",
+    duration: "2-3 Days",
+    startingPrice: 5999,
+    highlights: ["Taj Mahal", "Agra Fort", "Fatehpur Sikri", "Mehtab Bagh", "Local Cuisine", "Marble Crafts"],
+    description: "Home to the iconic Taj Mahal, one of the Seven Wonders of the World. Agra is a must-visit for its Mughal heritage and architectural marvels.",
+    overview: "Agra, once the capital of the Mughal Empire, is home to three UNESCO World Heritage Sites. The city is synonymous with the Taj Mahal, built by Emperor Shah Jahan as a symbol of eternal love. Beyond the Taj, Agra offers rich history and craftsmanship.",
+    activities: [
+      { name: "Taj Mahal Visit", icon: Camera, description: "Explore the iconic monument at sunrise or sunset" },
+      { name: "Agra Fort Tour", icon: Camera, description: "Discover the massive red sandstone fortress of the Mughals" },
+      { name: "Fatehpur Sikri", icon: Camera, description: "Visit the abandoned Mughal capital city (40 km)" },
+      { name: "Marble Shopping", icon: Camera, description: "See artisans create intricate marble inlay work (pietra dura)" },
+    ],
+    packages: [
+      { name: "Taj Express", duration: "1N/2D", price: 5999, includes: ["Stay", "Breakfast", "Taj Mahal", "Fort Tour"] },
+      { name: "Mughal Heritage", duration: "2N/3D", price: 9999, includes: ["Stay", "All Meals", "Full Sightseeing", "Fatehpur Sikri"] },
+      { name: "Luxury Taj Experience", duration: "2N/3D", price: 24999, includes: ["Taj View Hotel", "All Inclusive", "Private Guide", "Sunset Dinner"] },
+    ],
+    howToReach: {
+      byAir: "Agra Airport (AGR) - limited flights, or Delhi (200 km)",
+      byTrain: "Agra Cantt (AGC) - well connected by Shatabdi, Gatimaan Express",
+      byRoad: "Yamuna Expressway from Delhi (200 km, 3 hours)",
+    },
+    weather: {
+      summer: "35-45°C (Very Hot)",
+      monsoon: "28-35°C (Humid)",
+      winter: "8-22°C (Pleasant & Ideal)",
+    },
+    coordinates: { latitude: 27.1767, longitude: 78.0081 }
+  },
+  "13": {
+    id: 13,
+    name: "Mumbai",
+    state: "Maharashtra",
+    country: "India",
+    image: mumbaiImg,
+    category: "urban",
+    rating: 4.6,
+    reviewCount: 18500,
+    bestTime: "November - February",
+    duration: "3-5 Days",
+    startingPrice: 7999,
+    highlights: ["Gateway of India", "Marine Drive", "Bollywood Tours", "Street Food", "Elephanta Caves", "Nightlife"],
+    description: "The City of Dreams - India's financial capital, home to Bollywood, and a melting pot of cultures, cuisines, and endless energy.",
+    overview: "Mumbai, formerly Bombay, is India's largest city and commercial hub. From the iconic Gateway of India to the glittering Marine Drive, from street food to fine dining, and from ancient caves to modern skyscrapers, Mumbai offers an unforgettable urban experience.",
+    activities: [
+      { name: "Heritage Walk", icon: Camera, description: "Explore Gateway of India, Taj Palace Hotel, and CST Station" },
+      { name: "Marine Drive Evening", icon: Camera, description: "Walk along the Queen's Necklace at sunset" },
+      { name: "Bollywood Studio Tour", icon: Camera, description: "Visit Film City and see behind the scenes of Indian cinema" },
+      { name: "Street Food Trail", icon: Camera, description: "Taste vada pav, pav bhaji, and other Mumbai specialties" },
+    ],
+    packages: [
+      { name: "Mumbai Essentials", duration: "2N/3D", price: 7999, includes: ["Stay", "Breakfast", "Sightseeing", "Street Food Tour"] },
+      { name: "Mumbai Explorer", duration: "3N/4D", price: 14999, includes: ["Stay", "All Meals", "Elephanta Caves", "Bollywood Tour"] },
+      { name: "Luxury Mumbai", duration: "4N/5D", price: 35999, includes: ["5-Star Stay", "All Inclusive", "Private Tours", "Fine Dining"] },
+    ],
+    howToReach: {
+      byAir: "Chhatrapati Shivaji International Airport (BOM) - India's busiest airport",
+      byTrain: "Mumbai Central (MMCT), CST, Dadar - major railway junctions",
+      byRoad: "Well connected via Mumbai-Pune Expressway, NH48",
+    },
+    weather: {
+      summer: "30-35°C (Hot & Humid)",
+      monsoon: "25-30°C (Heavy Rainfall)",
+      winter: "20-32°C (Pleasant & Ideal)",
+    },
+    coordinates: { latitude: 18.9220, longitude: 72.8347 }
   },
 };
 

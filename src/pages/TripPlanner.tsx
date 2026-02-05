@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -33,6 +34,10 @@ import {
   TreePine,
 } from "lucide-react";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 const interests = [
   { id: "adventure", label: "Adventure", icon: Mountain },
@@ -45,6 +50,9 @@ const interests = [
 ];
 
 export default function TripPlanner() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [dates, setDates] = useState<{ from?: Date; to?: Date }>({});
   const [budget, setBudget] = useState([2000]);
@@ -54,6 +62,119 @@ export default function TripPlanner() {
     travelers: "2",
     notes: "",
   });
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [itinerary, setItinerary] = useState<string>("");
+
+  const generateItinerary = async () => {
+    if (!user) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be logged in to generate itineraries",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    if (!formData.destination) {
+      toast({
+        title: "Destination required",
+        description: "Please enter a destination for your trip",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    setItinerary("");
+    setStep(4);
+
+    try {
+      const session = await supabase.auth.getSession();
+      if (!session.data.session) {
+        throw new Error("No active session");
+      }
+
+      const ITINERARY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-itinerary`;
+
+      const resp = await fetch(ITINERARY_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.data.session.access_token}`,
+        },
+        body: JSON.stringify({
+          destination: formData.destination,
+          startDate: dates.from ? format(dates.from, "yyyy-MM-dd") : null,
+          endDate: dates.to ? format(dates.to, "yyyy-MM-dd") : null,
+          travelers: formData.travelers,
+          budget: budget[0],
+          interests: selectedInterests,
+          notes: formData.notes,
+        }),
+      });
+
+      if (!resp.ok) {
+        const errorData = await resp.json();
+        throw new Error(errorData.error || "Failed to generate itinerary");
+      }
+
+      const reader = resp.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) {
+        throw new Error("No response stream");
+      }
+
+      let textBuffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") break;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              setItinerary((prev) => prev + content);
+            }
+          } catch {
+            textBuffer = line + "\n" + textBuffer;
+            break;
+          }
+        }
+      }
+
+      toast({
+        title: "Itinerary Generated! 🎉",
+        description: "Your personalized travel plan is ready",
+      });
+    } catch (error: any) {
+      console.error("Itinerary generation error:", error);
+      toast({
+        title: "Generation failed",
+        description: error.message || "Please try again",
+        variant: "destructive",
+      });
+      setStep(3);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const toggleInterest = (id: string) => {
     setSelectedInterests((prev) =>
@@ -339,11 +460,67 @@ export default function TripPlanner() {
                   <Button variant="outline" onClick={() => setStep(2)}>
                     Back
                   </Button>
-                  <Button className="flex-1 bg-coral-gradient hover:opacity-90 shadow-glow">
+                  <Button
+                    className="flex-1 bg-coral-gradient hover:opacity-90 shadow-glow"
+                    onClick={generateItinerary}
+                    disabled={isGenerating}
+                  >
+                    {isGenerating ? (
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    ) : (
                     <Sparkles className="w-5 h-5 mr-2" />
+                    )}
                     Generate My Itinerary
                   </Button>
                 </div>
+              </div>
+            )}
+
+            {step === 4 && (
+              <div className="bg-card rounded-2xl p-8 shadow-lg border space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-display font-bold flex items-center gap-2">
+                    <Sparkles className="w-6 h-6 text-primary" />
+                    Your Itinerary
+                  </h2>
+                  {isGenerating && (
+                    <div className="flex items-center gap-2 text-primary">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="text-sm">Generating...</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="prose prose-sm max-w-none dark:prose-invert">
+                  <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                    {itinerary || (
+                      <div className="flex items-center justify-center py-12 text-muted-foreground">
+                        <Loader2 className="w-8 h-8 animate-spin mr-3" />
+                        Creating your personalized itinerary...
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {!isGenerating && itinerary && (
+                  <div className="flex gap-4 pt-4 border-t">
+                    <Button variant="outline" onClick={() => setStep(1)}>
+                      Plan Another Trip
+                    </Button>
+                    <Button
+                      className="flex-1 bg-coral-gradient"
+                      onClick={() => navigate("/flights")}
+                    >
+                      Book Flights
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate("/hotels")}
+                    >
+                      Find Hotels
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </motion.div>
