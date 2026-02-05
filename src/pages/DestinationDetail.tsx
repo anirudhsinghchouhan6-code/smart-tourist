@@ -37,6 +37,7 @@ import varanasiImg from "@/assets/destination-varanasi.jpg";
 import manaliImg from "@/assets/destination-manali.jpg";
 import andamanImg from "@/assets/destination-andaman.jpg";
 import udaipurImg from "@/assets/destination-udaipur.jpg";
+import { DestinationMap } from "@/components/DestinationMap";
 
 const destinationsData: Record<string, any> = {
   "1": {
@@ -74,7 +75,8 @@ const destinationsData: Record<string, any> = {
       summer: "30-35°C (Hot & Humid)",
       monsoon: "25-30°C (Heavy Rainfall)",
       winter: "20-32°C (Pleasant & Ideal)",
-    }
+    },
+    coordinates: { latitude: 15.2993, longitude: 74.1240 }
   },
   "2": {
     id: 2,
@@ -111,7 +113,8 @@ const destinationsData: Record<string, any> = {
       summer: "35-45°C (Very Hot)",
       monsoon: "25-35°C (Moderate Rainfall)",
       winter: "8-22°C (Cool & Ideal)",
-    }
+    },
+    coordinates: { latitude: 26.9124, longitude: 75.7873 }
   },
   "3": {
     id: 3,
@@ -148,7 +151,8 @@ const destinationsData: Record<string, any> = {
       summer: "28-35°C (Hot & Humid)",
       monsoon: "24-30°C (Heavy Rainfall - Scenic)",
       winter: "22-32°C (Pleasant & Ideal)",
-    }
+    },
+    coordinates: { latitude: 10.8505, longitude: 76.2711 }
   },
   "4": {
     id: 4,
@@ -185,7 +189,8 @@ const destinationsData: Record<string, any> = {
       summer: "15-30°C (Best Time)",
       monsoon: "10-25°C (Landslides possible)",
       winter: "-15 to 5°C (Extreme Cold, Roads Closed)",
-    }
+    },
+    coordinates: { latitude: 34.1526, longitude: 77.5771 }
   },
   "5": {
     id: 5,
@@ -222,7 +227,8 @@ const destinationsData: Record<string, any> = {
       summer: "32-45°C (Very Hot)",
       monsoon: "26-35°C (Humid)",
       winter: "5-20°C (Cool & Ideal)",
-    }
+    },
+    coordinates: { latitude: 25.3176, longitude: 82.9739 }
   },
   "6": {
     id: 6,
@@ -259,7 +265,8 @@ const destinationsData: Record<string, any> = {
       summer: "10-25°C (Pleasant)",
       monsoon: "10-20°C (Landslides possible)",
       winter: "-5 to 10°C (Snowfall, Ideal for Snow Activities)",
-    }
+    },
+    coordinates: { latitude: 32.2396, longitude: 77.1887 }
   },
   "7": {
     id: 7,
@@ -296,7 +303,8 @@ const destinationsData: Record<string, any> = {
       summer: "24-35°C (Humid)",
       monsoon: "24-30°C (Heavy Rainfall, Not Ideal)",
       winter: "23-30°C (Pleasant & Ideal)",
-    }
+    },
+    coordinates: { latitude: 11.7401, longitude: 92.6586 }
   },
   "8": {
     id: 8,
@@ -333,7 +341,8 @@ const destinationsData: Record<string, any> = {
       summer: "30-42°C (Hot)",
       monsoon: "25-35°C (Scenic, Lakes Full)",
       winter: "10-25°C (Pleasant & Ideal)",
-    }
+    },
+    coordinates: { latitude: 24.5854, longitude: 73.7125 }
   },
 };
 
@@ -551,6 +560,16 @@ export default function DestinationDetail() {
                         </div>
                       </CardContent>
                     </Card>
+
+                    {destination.coordinates && (
+                      <DestinationMap
+                        name={destination.name}
+                        state={destination.state}
+                        country={destination.country}
+                        latitude={destination.coordinates.latitude}
+                        longitude={destination.coordinates.longitude}
+                      />
+                    )}
                   </div>
                 </div>
               </TabsContent>

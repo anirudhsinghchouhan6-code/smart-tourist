@@ -85,11 +85,11 @@ export function TripPackageCard({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-foreground">
-                ${price.toLocaleString()}
+                ₹{price.toLocaleString()}
               </span>
               {originalPrice && (
                 <span className="text-sm text-muted-foreground line-through">
-                  ${originalPrice.toLocaleString()}
+                  ₹{originalPrice.toLocaleString()}
                 </span>
               )}
             </div>
