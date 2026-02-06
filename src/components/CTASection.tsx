@@ -30,7 +30,7 @@ export function CTASection() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium mb-6"
             >
               <MapPin className="w-4 h-4" />
-              Powered by AI + Local Experts
+              Discover Incredible India
             </motion.div>
 
             <motion.h2
@@ -40,7 +40,7 @@ export function CTASection() {
               transition={{ delay: 0.1 }}
               className="text-3xl md:text-5xl font-display font-bold text-white mb-4"
             >
-              Where Will You Go Next?
+              From Himalayas to Beaches
             </motion.h2>
 
             <motion.p
@@ -50,8 +50,8 @@ export function CTASection() {
               transition={{ delay: 0.2 }}
               className="text-xl text-white/70 mb-8 max-w-2xl mx-auto"
             >
-              Pick a place, pack your bags, and leave the planning to us — your
-              next adventure is just a click away!
+              Explore the diverse beauty of India — snow-capped mountains, tropical beaches, 
+              ancient temples & vibrant cities. Your next adventure awaits!
             </motion.p>
 
             <motion.div
@@ -67,7 +67,7 @@ export function CTASection() {
                 onClick={() => navigate("/trip-planner")}
               >
                 <Sparkles className="w-5 h-5 mr-2" />
-                Create a Trip Now!
+                Plan Your India Trip
               </Button>
               <Button
                 size="lg"

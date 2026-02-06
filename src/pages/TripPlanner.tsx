@@ -24,7 +24,7 @@ import {
   CalendarIcon,
   Users,
   MapPin,
-  DollarSign,
+  IndianRupee,
   Heart,
   Mountain,
   Utensils,
@@ -55,7 +55,7 @@ export default function TripPlanner() {
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [dates, setDates] = useState<{ from?: Date; to?: Date }>({});
-  const [budget, setBudget] = useState([2000]);
+  const [budget, setBudget] = useState([50000]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     destination: "",
@@ -248,7 +248,7 @@ export default function TripPlanner() {
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       <Input
-                        placeholder="e.g., Bali, Thailand, Europe..."
+                        placeholder="e.g., Goa, Ladakh, Kerala..."
                         className="pl-10"
                         value={formData.destination}
                         onChange={(e) =>
@@ -351,20 +351,20 @@ export default function TripPlanner() {
                     <div className="flex items-center justify-between">
                       <Label>Budget per Person</Label>
                       <span className="text-2xl font-bold text-primary">
-                        ${budget[0].toLocaleString()}
+                        ₹{budget[0].toLocaleString('en-IN')}
                       </span>
                     </div>
                     <Slider
                       value={budget}
                       onValueChange={setBudget}
-                      min={500}
-                      max={10000}
-                      step={100}
+                      min={10000}
+                      max={500000}
+                      step={5000}
                       className="py-4"
                     />
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>$500</span>
-                      <span>$10,000+</span>
+                      <span>₹10,000</span>
+                      <span>₹5,00,000+</span>
                     </div>
                   </div>
 
@@ -440,8 +440,8 @@ export default function TripPlanner() {
                         {formData.travelers} travelers
                       </div>
                       <div className="flex items-center gap-2 text-muted-foreground">
-                        <DollarSign className="w-4 h-4" />$
-                        {budget[0].toLocaleString()} budget
+                        <IndianRupee className="w-4 h-4" />₹
+                        {budget[0].toLocaleString('en-IN')} budget
                       </div>
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <CalendarIcon className="w-4 h-4" />
