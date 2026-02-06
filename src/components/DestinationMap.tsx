@@ -22,8 +22,8 @@
            Location
          </CardTitle>
        </CardHeader>
-       <CardContent className="p-0">
-         <div className="aspect-video w-full">
+        <CardContent className="p-0">
+          <div className="aspect-[16/10] w-full min-h-[400px]">
            <iframe
              src={mapUrl}
              className="w-full h-full border-0"

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles,
   Heart,
-  DollarSign,
+  IndianRupee,
   Shield,
   Headphones,
   RefreshCw,
@@ -11,39 +11,39 @@ import {
 const features = [
   {
     icon: Sparkles,
-    title: "Smarter Than Any Search Engine",
+    title: "AI-Powered Trip Planning",
     description:
-      "AI pulls the best flights, stays & activities from 1100+ platforms — so you don't waste hours comparing.",
+      "Our AI curates the best flights, stays & activities across India — from Ladakh to Kerala, Goa to Andaman.",
   },
   {
     icon: Headphones,
-    title: "Always a Human Behind the Screen",
+    title: "24×7 Travel Support",
     description:
-      "24×7 WhatsApp concierge. Got stuck, missed a flight, or want a table with a view? One ping and it's done.",
+      "WhatsApp concierge always ready. Missed a train, need a last-minute hotel? One message and it's sorted.",
   },
   {
     icon: Heart,
-    title: "Locals + Experts, On Your Side",
+    title: "Local Experts, Real Insights",
     description:
-      "AI builds, humans perfect. Every trip is fine-tuned by on-ground experts & travel curators who know the real deal.",
+      "Every trip is fine-tuned by on-ground experts who know the hidden gems, best chai stalls & secret viewpoints.",
   },
   {
     icon: Shield,
-    title: "Zero Guesswork, All Trust",
+    title: "Trusted by 10,000+ Travelers",
     description:
-      "Backed by 10,000+ reviews, global partners, and verified local hosts — you only get tried & trusted experiences.",
+      "Verified hosts, honest reviews & partnerships with top Indian hotels — only tried & tested experiences.",
   },
   {
-    icon: DollarSign,
-    title: "Plans That Actually Flow",
+    icon: IndianRupee,
+    title: "Best Prices, No Hidden Fees",
     description:
-      "No awkward gaps or wasted days — from airport pickups to late-night food tours, your itinerary just works.",
+      "Transparent pricing in ₹ — what you see is what you pay. EMI options available on all packages.",
   },
   {
     icon: RefreshCw,
-    title: "No Stress, Just Plan B Ready",
+    title: "Flexible & Stress-Free",
     description:
-      "Weather turned bad? Activity sold out? We'll swap in an equally amazing alternative before you even ask.",
+      "Plans change? We adapt. Easy modifications, quick refunds & alternative options ready before you ask.",
   },
 ];
 
@@ -59,11 +59,15 @@ export function FeaturesSection() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-            What Makes Us{" "}
+            Travel to Match{" "}
             <span className="text-gradient-coral bg-coral-gradient">
-              Wander-ful
+              Your Vibe
             </span>
           </h2>
+          <p className="text-white/70 max-w-2xl mx-auto">
+            Find a plan that feels just right — whether you're planning a honeymoon, 
+            a road trip, or your next solo escape across incredible India.
+          </p>
         </motion.div>
 
         {/* Features Grid */}

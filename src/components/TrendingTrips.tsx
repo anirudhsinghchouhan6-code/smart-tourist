@@ -4,45 +4,94 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import singaporeImg from "@/assets/destination-singapore.jpg";
-import maldivesImg from "@/assets/destination-maldives.jpg";
-import georgiaImg from "@/assets/destination-georgia.jpg";
+import goaImg from "@/assets/destination-goa.jpg";
+import keralaImg from "@/assets/destination-kerala.jpg";
+import ladakhImg from "@/assets/destination-ladakh.jpg";
+import jaipurImg from "@/assets/destination-jaipur.jpg";
+import andamanImg from "@/assets/destination-andaman.jpg";
+import manaliImg from "@/assets/destination-manali.jpg";
 
 const trendingTrips = [
+  // Himalayan Thrills - North India
   {
     id: 1,
-    title: "Magical Moments in Singapore",
-    destinations: ["Singapore"],
-    nights: 4,
-    price: 1799,
-    originalPrice: 2199,
-    curator: "Bharath",
-    image: singaporeImg,
+    title: "Himalayan Adventure in Ladakh",
+    destinations: ["Leh", "Nubra Valley", "Pangong Lake"],
+    nights: 7,
+    price: 45999,
+    originalPrice: 55999,
+    curator: "Wanderlust India",
+    image: ladakhImg,
     rating: 4.9,
-    includes: ["Stays", "Transfers", "Flights", "Activities"],
+    includes: ["Stays", "Transfers", "Flights", "Permits"],
+    region: "North India",
   },
   {
     id: 2,
-    title: "Romantic Honeymoon in Maldives",
-    destinations: ["Malé", "Baa Atoll"],
-    nights: 6,
-    price: 3499,
-    originalPrice: 4299,
-    curator: "Aakansha",
-    image: maldivesImg,
-    rating: 4.9,
-    includes: ["Stays", "Speedboat", "All-Inclusive", "Spa"],
+    title: "Magical Manali & Spiti Valley",
+    destinations: ["Manali", "Spiti", "Kaza", "Key Monastery"],
+    nights: 8,
+    price: 35999,
+    originalPrice: 42999,
+    curator: "Mountain Trails",
+    image: manaliImg,
+    rating: 4.8,
+    includes: ["Stays", "4x4 Transfers", "Meals", "Guide"],
+    region: "North India",
   },
+  // Coastal & Island Adventures - West & South India
   {
     id: 3,
-    title: "Adventure Getaway to Georgia",
-    destinations: ["Tbilisi", "Stepantsminda", "Kazbegi"],
-    nights: 10,
-    price: 2199,
-    curator: "TravelWise",
-    image: georgiaImg,
+    title: "Tropical Escape to Goa",
+    destinations: ["North Goa", "South Goa", "Dudhsagar"],
+    nights: 5,
+    price: 18999,
+    originalPrice: 24999,
+    curator: "Beach Lovers",
+    image: goaImg,
+    rating: 4.7,
+    includes: ["Stays", "Transfers", "Water Sports", "Parties"],
+    region: "West India",
+  },
+  {
+    id: 4,
+    title: "Andaman Island Hopping",
+    destinations: ["Port Blair", "Havelock", "Neil Island"],
+    nights: 6,
+    price: 42999,
+    originalPrice: 52999,
+    curator: "Island Explorers",
+    image: andamanImg,
+    rating: 4.9,
+    includes: ["Stays", "Ferry", "Scuba Diving", "Snorkeling"],
+    region: "Islands",
+  },
+  // Southern Adventures - Karnataka & Kerala
+  {
+    id: 5,
+    title: "Kerala Backwaters & Beyond",
+    destinations: ["Kochi", "Munnar", "Alleppey", "Kovalam"],
+    nights: 7,
+    price: 32999,
+    originalPrice: 39999,
+    curator: "Kerala Tourism",
+    image: keralaImg,
+    rating: 4.9,
+    includes: ["Stays", "Houseboat", "Ayurveda Spa", "Meals"],
+    region: "South India",
+  },
+  {
+    id: 6,
+    title: "Royal Rajasthan Heritage Tour",
+    destinations: ["Jaipur", "Udaipur", "Jodhpur", "Jaisalmer"],
+    nights: 9,
+    price: 48999,
+    originalPrice: 59999,
+    curator: "Heritage Walks",
+    image: jaipurImg,
     rating: 4.8,
-    includes: ["Stays", "Transfers", "Tours", "Meals"],
+    includes: ["Palace Stays", "Desert Safari", "Cultural Shows", "Meals"],
+    region: "North India",
   },
 ];
 
@@ -61,17 +110,40 @@ export function TrendingTrips() {
         >
           <div>
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-              Trips Travelers Can't Stop Loving
+              Places You'll Brag About Forever
             </h2>
             <p className="text-muted-foreground max-w-xl">
-              Created and loved by travelers like you. These itineraries are
-              customized, bookable, and trending right now.
+              From jaw-dropping landmarks to hidden gems — these are the kind of spots 
+              that turn into stories, selfies, and serious travel envy.
             </p>
           </div>
           <Button variant="outline" className="self-start md:self-auto">
             View All Trips
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
+        </motion.div>
+
+        {/* Region Labels */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-8"
+        >
+          <div className="flex flex-wrap gap-3">
+            <span className="px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
+              🏔️ Himalayan Thrills
+            </span>
+            <span className="px-4 py-2 rounded-full bg-teal/10 text-teal text-sm font-medium">
+              🏖️ Coastal Adventures
+            </span>
+            <span className="px-4 py-2 rounded-full bg-coral/10 text-coral text-sm font-medium">
+              🌴 Southern Escapes
+            </span>
+            <span className="px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium">
+              🏰 Royal Heritage
+            </span>
+          </div>
         </motion.div>
 
         {/* Trips Grid */}
