@@ -39,6 +39,8 @@ const destinations = [
     category: "beach",
     rating: 4.8,
     state: "Goa",
+    bestTime: "Nov - Feb",
+    currentWeather: "28°C",
   },
   {
     id: 2,
@@ -48,6 +50,8 @@ const destinations = [
     category: "heritage",
     rating: 4.9,
     state: "Rajasthan",
+    bestTime: "Oct - Mar",
+    currentWeather: "22°C",
   },
   {
     id: 3,
@@ -57,6 +61,8 @@ const destinations = [
     category: "nature",
     rating: 4.9,
     state: "Kerala",
+    bestTime: "Sep - Mar",
+    currentWeather: "30°C",
   },
   {
     id: 4,
@@ -66,6 +72,8 @@ const destinations = [
     category: "adventure",
     rating: 4.8,
     state: "Ladakh",
+    bestTime: "May - Sep",
+    currentWeather: "5°C",
   },
   {
     id: 5,
@@ -75,6 +83,8 @@ const destinations = [
     category: "spiritual",
     rating: 4.7,
     state: "Uttar Pradesh",
+    bestTime: "Oct - Mar",
+    currentWeather: "20°C",
   },
   {
     id: 6,
@@ -84,6 +94,8 @@ const destinations = [
     category: "adventure",
     rating: 4.8,
     state: "Himachal Pradesh",
+    bestTime: "Mar - Jun",
+    currentWeather: "8°C",
   },
   {
     id: 7,
@@ -93,6 +105,8 @@ const destinations = [
     category: "beach",
     rating: 4.9,
     state: "Andaman & Nicobar",
+    bestTime: "Oct - May",
+    currentWeather: "29°C",
   },
   {
     id: 8,
@@ -102,6 +116,8 @@ const destinations = [
     category: "heritage",
     rating: 4.8,
     state: "Rajasthan",
+    bestTime: "Sep - Mar",
+    currentWeather: "24°C",
   },
   {
     id: 9,
@@ -111,6 +127,8 @@ const destinations = [
     category: "hill-station",
     rating: 4.7,
     state: "Himachal Pradesh",
+    bestTime: "Mar - Jun",
+    currentWeather: "12°C",
   },
   {
     id: 10,
@@ -120,6 +138,8 @@ const destinations = [
     category: "spiritual",
     rating: 4.8,
     state: "Uttarakhand",
+    bestTime: "Sep - Nov",
+    currentWeather: "18°C",
   },
   {
     id: 11,
@@ -129,6 +149,8 @@ const destinations = [
     category: "hill-station",
     rating: 4.8,
     state: "West Bengal",
+    bestTime: "Apr - Jun",
+    currentWeather: "14°C",
   },
   {
     id: 12,
@@ -138,6 +160,8 @@ const destinations = [
     category: "heritage",
     rating: 4.9,
     state: "Uttar Pradesh",
+    bestTime: "Oct - Mar",
+    currentWeather: "21°C",
   },
   {
     id: 13,
@@ -147,6 +171,8 @@ const destinations = [
     category: "urban",
     rating: 4.6,
     state: "Maharashtra",
+    bestTime: "Nov - Feb",
+    currentWeather: "32°C",
   },
 ];
 
@@ -212,6 +238,8 @@ export function DestinationsSection() {
                 image={destination.image}
                 category={destination.category}
                 rating={destination.rating}
+                bestTime={destination.bestTime}
+                currentWeather={destination.currentWeather}
                 onClick={() => navigate(`/destination/${destination.id}`)}
               />
             </motion.div>
