@@ -722,24 +722,58 @@ export default function DestinationDetail() {
 
                   <div className="space-y-6">
                     <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Calendar className="w-5 h-5" />
-                          Weather Guide
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <Umbrella className="w-5 h-5" />
+                          Weather & Climate
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="flex justify-between items-center pb-2 border-b">
-                          <span className="text-muted-foreground">Summer</span>
-                          <span className="font-medium">{destination.weather.summer}</span>
+                        {/* Best Time Highlight */}
+                        <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Calendar className="w-4 h-4 text-primary" />
+                            <span className="font-semibold text-primary">Best Time to Visit</span>
+                          </div>
+                          <p className="text-sm text-foreground ml-6">{destination.bestTime}</p>
                         </div>
-                        <div className="flex justify-between items-center pb-2 border-b">
-                          <span className="text-muted-foreground">Monsoon</span>
-                          <span className="font-medium">{destination.weather.monsoon}</span>
+
+                        {/* Seasonal Weather */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                            <div className="flex items-center gap-2">
+                              <span className="text-base">☀️</span>
+                              <span className="text-sm font-medium">Summer (Mar-Jun)</span>
+                            </div>
+                            <span className="text-sm font-medium text-muted-foreground">
+                              {destination.weather.summer}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                            <div className="flex items-center gap-2">
+                              <span className="text-base">🌧️</span>
+                              <span className="text-sm font-medium">Monsoon (Jul-Oct)</span>
+                            </div>
+                            <span className="text-sm font-medium text-muted-foreground">
+                              {destination.weather.monsoon}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                            <div className="flex items-center gap-2">
+                              <span className="text-base">❄️</span>
+                              <span className="text-sm font-medium">Winter (Nov-Feb)</span>
+                            </div>
+                            <span className="text-sm font-medium text-muted-foreground">
+                              {destination.weather.winter}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground">Winter</span>
-                          <span className="font-medium">{destination.weather.winter}</span>
+
+                        {/* Pro Tip */}
+                        <div className="pt-2 border-t">
+                          <p className="text-xs text-muted-foreground">
+                            💡 <span className="font-medium">Pro tip:</span> Book 2-3 months in advance for peak season visits during {destination.bestTime}.
+                          </p>
                         </div>
                       </CardContent>
                     </Card>

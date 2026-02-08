@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Star, MapPin } from "lucide-react";
+import { Star, MapPin, Calendar, Thermometer } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface DestinationCardProps {
@@ -8,6 +8,8 @@ interface DestinationCardProps {
   image: string;
   category: string;
   rating?: number;
+  bestTime?: string;
+  currentWeather?: string;
   onClick?: () => void;
 }
 
@@ -17,6 +19,8 @@ export function DestinationCard({
   image,
   category,
   rating = 4.5,
+  bestTime,
+  currentWeather,
   onClick,
 }: DestinationCardProps) {
   return (
@@ -43,10 +47,18 @@ export function DestinationCard({
         {category}
       </Badge>
 
-      {/* Rating */}
-      <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 rounded-full bg-white/20 backdrop-blur-sm">
-        <Star className="w-3 h-3 text-gold fill-gold" />
-        <span className="text-xs text-white font-medium">{rating}</span>
+      {/* Rating & Weather */}
+      <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
+        <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/20 backdrop-blur-sm">
+          <Star className="w-3 h-3 text-gold fill-gold" />
+          <span className="text-xs text-white font-medium">{rating}</span>
+        </div>
+        {currentWeather && (
+          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/20 backdrop-blur-sm">
+            <Thermometer className="w-3 h-3 text-white" />
+            <span className="text-xs text-white font-medium">{currentWeather}</span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -54,10 +66,16 @@ export function DestinationCard({
         <h3 className="text-xl font-display font-bold text-white mb-1">
           {name}
         </h3>
-        <div className="flex items-center gap-1 text-white/70">
+        <div className="flex items-center gap-1 text-white/70 mb-2">
           <MapPin className="w-4 h-4" />
           <span className="text-sm">{country}</span>
         </div>
+        {bestTime && (
+          <div className="flex items-center gap-1.5 text-white/80">
+            <Calendar className="w-3.5 h-3.5" />
+            <span className="text-xs">Best: {bestTime}</span>
+          </div>
+        )}
       </div>
 
       {/* Hover Effect */}
