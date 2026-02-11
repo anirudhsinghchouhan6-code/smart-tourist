@@ -78,6 +78,18 @@ const mockHotels = [
     amenities: ["wifi", "parking", "breakfast"],
     stars: 5,
   },
+  {
+    id: 5,
+    name: "Mount Abu Hostel",
+    location: "Mount Abu, Rajasthan",
+    image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400",
+    rating: 4.3,
+    reviews: 1256,
+    price: 899,
+    originalPrice: 1499,
+    amenities: ["wifi", "breakfast"],
+    stars: 3,
+  },
 ];
 
 const amenityIcons: Record<string, React.ReactNode> = {
