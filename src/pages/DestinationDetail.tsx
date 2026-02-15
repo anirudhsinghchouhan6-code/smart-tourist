@@ -1024,6 +1024,42 @@ export default function DestinationDetail() {
                               </div>
                             ))}
                           </div>
+
+                          {/* Route Map Embed */}
+                          <div className="pt-3">
+                            <Card className="overflow-hidden">
+                              <CardHeader className="pb-2">
+                                <CardTitle className="flex items-center gap-2 text-sm">
+                                  <MapPin className="w-4 h-4 text-primary" />
+                                  Route Map: {userLocation.name} → {destination.name}
+                                </CardTitle>
+                              </CardHeader>
+                              <CardContent className="p-0">
+                                <div className="aspect-[16/9] w-full min-h-[350px]">
+                                  <iframe
+                                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${Math.min(userLocation.lng, destination.coordinates.longitude) - 0.5}%2C${Math.min(userLocation.lat, destination.coordinates.latitude) - 0.5}%2C${Math.max(userLocation.lng, destination.coordinates.longitude) + 0.5}%2C${Math.max(userLocation.lat, destination.coordinates.latitude) + 0.5}&layer=mapnik&marker=${destination.coordinates.latitude}%2C${destination.coordinates.longitude}`}
+                                    className="w-full h-full border-0"
+                                    title={`Route from ${userLocation.name} to ${destination.name}`}
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                  />
+                                </div>
+                                <div className="p-3 bg-muted/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                                  <p className="text-xs text-muted-foreground">
+                                    📍 {userLocation.name} → {destination.name}, {destination.state}
+                                  </p>
+                                  <a
+                                    href={getDirectionsUrl()}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-primary hover:underline font-medium"
+                                  >
+                                    Open full route in Google Maps →
+                                  </a>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
                         </div>
                       );
                     })()}
