@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useBooking } from "@/hooks/useBooking";
 import { format, addDays } from "date-fns";
+import { useState, useEffect } from "react";
 
 import goaImg from "@/assets/destination-goa.jpg";
 import jaipurImg from "@/assets/destination-jaipur.jpg";
@@ -546,6 +547,52 @@ export default function DestinationDetail() {
   const navigate = useNavigate();
   const destination = destinationsData[id || "1"];
   const { createBooking, isBooking } = useBooking();
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  const detectLocation = () => {
+    setLocationLoading(true);
+    setLocationError(null);
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation not supported");
+      setLocationLoading(false);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+          const data = await res.json();
+          const city = data.address?.city || data.address?.town || data.address?.village || data.address?.state || "Your Location";
+          setUserLocation({ lat: latitude, lng: longitude, name: city });
+        } catch {
+          setUserLocation({ lat: latitude, lng: longitude, name: "Your Location" });
+        }
+        setLocationLoading(false);
+      },
+      () => {
+        setLocationError("Location access denied. Please allow location access.");
+        setLocationLoading(false);
+      }
+    );
+  };
+
+  const getDirectionsUrl = () => {
+    if (!userLocation || !destination?.coordinates) return "#";
+    return `https://www.google.com/maps/dir/${userLocation.lat},${userLocation.lng}/${destination.coordinates.latitude},${destination.coordinates.longitude}`;
+  };
+
+  const getDistanceApprox = () => {
+    if (!userLocation || !destination?.coordinates) return null;
+    const R = 6371;
+    const dLat = ((destination.coordinates.latitude - userLocation.lat) * Math.PI) / 180;
+    const dLon = ((destination.coordinates.longitude - userLocation.lng) * Math.PI) / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos((userLocation.lat * Math.PI) / 180) * Math.cos((destination.coordinates.latitude * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c);
+  };
 
   const handleBookPackage = async (pkg: { name: string; duration: string; price: number; includes: string[] }) => {
     const travelDate = addDays(new Date(), 14); // Default to 2 weeks from now
@@ -877,6 +924,58 @@ export default function DestinationDetail() {
               </TabsContent>
 
               <TabsContent value="travel">
+                {/* Current Location Card */}
+                <Card className="mb-6 border-primary/30 bg-primary/5">
+                  <CardContent className="pt-6">
+                    {!userLocation && !locationLoading && (
+                      <div className="flex flex-col sm:flex-row items-center gap-4">
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <MapPin className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-semibold">Get directions from your location</p>
+                            <p className="text-sm text-muted-foreground">
+                              {locationError || "Allow location access to see distance & route to " + destination.name}
+                            </p>
+                          </div>
+                        </div>
+                        <Button onClick={detectLocation} variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                          <MapPin className="w-4 h-4 mr-2" />
+                          Detect My Location
+                        </Button>
+                      </div>
+                    )}
+                    {locationLoading && (
+                      <div className="flex items-center gap-3">
+                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                        <span className="text-muted-foreground">Detecting your location...</span>
+                      </div>
+                    )}
+                    {userLocation && (
+                      <div className="flex flex-col sm:flex-row items-center gap-4">
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <MapPin className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-semibold">{userLocation.name} → {destination.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              ~{getDistanceApprox()} km (straight line distance)
+                            </p>
+                          </div>
+                        </div>
+                        <a href={getDirectionsUrl()} target="_blank" rel="noopener noreferrer">
+                          <Button className="bg-coral-gradient">
+                            <MapPin className="w-4 h-4 mr-2" />
+                            Get Directions
+                          </Button>
+                        </a>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <Card>
                     <CardHeader>
