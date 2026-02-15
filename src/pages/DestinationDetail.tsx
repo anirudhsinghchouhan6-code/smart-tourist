@@ -24,7 +24,10 @@ import {
   ArrowLeft,
   Check,
   Info,
-  Loader2
+  Loader2,
+  Car,
+  Navigation,
+  Zap
 } from "lucide-react";
 import { useBooking } from "@/hooks/useBooking";
 import { format, addDays } from "date-fns";
@@ -594,6 +597,21 @@ export default function DestinationDetail() {
     return Math.round(R * c);
   };
 
+  const getRouteRecommendations = (distKm: number) => {
+    const routes: { mode: string; icon: typeof Plane; time: string; cost: number; recommended: boolean }[] = [];
+    if (distKm > 300) {
+      const flightHrs = Math.max(1, Math.round(distKm / 700));
+      routes.push({ mode: "By Flight", icon: Plane, time: `~${flightHrs}h ${flightHrs > 1 ? "(+ layover)" : "direct"}`, cost: Math.round(2000 + distKm * 3.5), recommended: distKm > 800 });
+    }
+    if (distKm > 100) {
+      const trainHrs = Math.round(distKm / 55);
+      routes.push({ mode: "By Train", icon: Train, time: `~${trainHrs}h`, cost: Math.round(distKm * 1.2), recommended: distKm >= 200 && distKm <= 800 });
+    }
+    const roadHrs = Math.round(distKm / 50);
+    routes.push({ mode: "By Road", icon: Car, time: `~${roadHrs}h drive`, cost: Math.round(distKm * 2.5), recommended: distKm < 200 });
+    return routes;
+  };
+
   const handleBookPackage = async (pkg: { name: string; duration: string; price: number; includes: string[] }) => {
     const travelDate = addDays(new Date(), 14); // Default to 2 weeks from now
     const durationMatch = pkg.duration.match(/(\d+)N/);
@@ -931,12 +949,12 @@ export default function DestinationDetail() {
                       <div className="flex flex-col sm:flex-row items-center gap-4">
                         <div className="flex items-center gap-3 flex-1">
                           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <MapPin className="w-5 h-5 text-primary" />
+                            <Navigation className="w-5 h-5 text-primary" />
                           </div>
                           <div>
-                            <p className="font-semibold">Get directions from your location</p>
+                            <p className="font-semibold">Find the best route to {destination.name}</p>
                             <p className="text-sm text-muted-foreground">
-                              {locationError || "Allow location access to see distance & route to " + destination.name}
+                              {locationError || "Detect your location to see recommended travel options with estimated time & cost"}
                             </p>
                           </div>
                         </div>
@@ -952,27 +970,63 @@ export default function DestinationDetail() {
                         <span className="text-muted-foreground">Detecting your location...</span>
                       </div>
                     )}
-                    {userLocation && (
-                      <div className="flex flex-col sm:flex-row items-center gap-4">
-                        <div className="flex items-center gap-3 flex-1">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <MapPin className="w-5 h-5 text-primary" />
+                    {userLocation && (() => {
+                      const dist = getDistanceApprox() || 0;
+                      const routes = getRouteRecommendations(dist);
+                      return (
+                        <div className="space-y-4">
+                          <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div className="flex items-center gap-3 flex-1">
+                              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <Navigation className="w-5 h-5 text-primary" />
+                              </div>
+                              <div>
+                                <p className="font-semibold">{userLocation.name} → {destination.name}</p>
+                                <p className="text-sm text-muted-foreground">~{dist} km distance</p>
+                              </div>
+                            </div>
+                            <a href={getDirectionsUrl()} target="_blank" rel="noopener noreferrer">
+                              <Button className="bg-coral-gradient">
+                                <MapPin className="w-4 h-4 mr-2" />
+                                Open in Maps
+                              </Button>
+                            </a>
                           </div>
-                          <div>
-                            <p className="font-semibold">{userLocation.name} → {destination.name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              ~{getDistanceApprox()} km (straight line distance)
-                            </p>
+
+                          {/* Best Route Recommendations */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                            {routes.map((route) => (
+                              <div
+                                key={route.mode}
+                                className={`relative p-3 rounded-lg border transition-colors ${
+                                  route.recommended
+                                    ? "border-primary bg-primary/10"
+                                    : "border-border bg-muted/30"
+                                }`}
+                              >
+                                {route.recommended && (
+                                  <Badge className="absolute -top-2 right-2 bg-primary text-primary-foreground text-xs">
+                                    <Zap className="w-3 h-3 mr-1" />
+                                    Best
+                                  </Badge>
+                                )}
+                                <div className="flex items-center gap-2 mb-2">
+                                  <route.icon className="w-4 h-4 text-primary" />
+                                  <span className="font-medium text-sm">{route.mode}</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-1">
+                                  <Clock className="w-3 h-3 inline mr-1" />
+                                  {route.time}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  ~₹{route.cost.toLocaleString()} per person
+                                </p>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                        <a href={getDirectionsUrl()} target="_blank" rel="noopener noreferrer">
-                          <Button className="bg-coral-gradient">
-                            <MapPin className="w-4 h-4 mr-2" />
-                            Get Directions
-                          </Button>
-                        </a>
-                      </div>
-                    )}
+                      );
+                    })()}
                   </CardContent>
                 </Card>
 
