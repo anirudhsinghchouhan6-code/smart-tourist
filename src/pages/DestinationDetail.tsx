@@ -27,7 +27,9 @@ import {
   Loader2,
   Car,
   Navigation,
-  Zap
+  Zap,
+  Building2,
+  ExternalLink
 } from "lucide-react";
 import { useBooking } from "@/hooks/useBooking";
 import { format, addDays } from "date-fns";
@@ -80,6 +82,15 @@ const destinationsData: Record<string, any> = {
       byTrain: "Madgaon Junction (MAO) and Thivim Station (THVM)",
       byRoad: "Well connected via NH66 from Mumbai and Bangalore",
     },
+    nearbyAirports: [
+      { name: "Dabolim Airport", code: "GOI", distance: 30, city: "Dabolim" },
+      { name: "Hubli Airport", code: "HBX", distance: 155, city: "Hubli" },
+    ],
+    nearbyStations: [
+      { name: "Madgaon Junction", code: "MAO", distance: 35, city: "Margao" },
+      { name: "Thivim Station", code: "THVM", distance: 12, city: "Thivim" },
+      { name: "Vasco da Gama", code: "VSG", distance: 30, city: "Vasco" },
+    ],
     weather: {
       summer: "30-35°C (Hot & Humid)",
       monsoon: "25-30°C (Heavy Rainfall)",
@@ -118,6 +129,14 @@ const destinationsData: Record<string, any> = {
       byTrain: "Jaipur Junction (JP) - Major railway hub",
       byRoad: "Well connected via NH48 from Delhi (280 km)",
     },
+    nearbyAirports: [
+      { name: "Jaipur International Airport", code: "JAI", distance: 13, city: "Sanganer" },
+      { name: "Delhi IGI Airport", code: "DEL", distance: 295, city: "New Delhi" },
+    ],
+    nearbyStations: [
+      { name: "Jaipur Junction", code: "JP", distance: 3, city: "Jaipur" },
+      { name: "Durgapura", code: "DPA", distance: 7, city: "Durgapura" },
+    ],
     weather: {
       summer: "35-45°C (Very Hot)",
       monsoon: "25-35°C (Moderate Rainfall)",
@@ -156,6 +175,16 @@ const destinationsData: Record<string, any> = {
       byTrain: "Ernakulam, Trivandrum, Kozhikode major junctions",
       byRoad: "Well connected via NH66 along the coast",
     },
+    nearbyAirports: [
+      { name: "Cochin International Airport", code: "COK", distance: 28, city: "Kochi" },
+      { name: "Trivandrum International Airport", code: "TRV", distance: 6, city: "Thiruvananthapuram" },
+      { name: "Calicut International Airport", code: "CCJ", distance: 25, city: "Kozhikode" },
+    ],
+    nearbyStations: [
+      { name: "Ernakulam Junction", code: "ERS", distance: 5, city: "Kochi" },
+      { name: "Trivandrum Central", code: "TVC", distance: 2, city: "Thiruvananthapuram" },
+      { name: "Kozhikode", code: "CLT", distance: 5, city: "Kozhikode" },
+    ],
     weather: {
       summer: "28-35°C (Hot & Humid)",
       monsoon: "24-30°C (Heavy Rainfall - Scenic)",
@@ -194,6 +223,14 @@ const destinationsData: Record<string, any> = {
       byRoad: "Manali-Leh Highway (474 km) or Srinagar-Leh Highway (434 km)",
       byTrain: "Nearest station Jammu Tawi, then by road",
     },
+    nearbyAirports: [
+      { name: "Leh Kushok Bakula Airport", code: "IXL", distance: 4, city: "Leh" },
+      { name: "Srinagar Airport", code: "SXR", distance: 434, city: "Srinagar" },
+    ],
+    nearbyStations: [
+      { name: "Jammu Tawi", code: "JAT", distance: 700, city: "Jammu" },
+      { name: "Pathankot", code: "PTK", distance: 760, city: "Pathankot" },
+    ],
     weather: {
       summer: "15-30°C (Best Time)",
       monsoon: "10-25°C (Landslides possible)",
@@ -232,6 +269,15 @@ const destinationsData: Record<string, any> = {
       byTrain: "Varanasi Junction (BSB) and Varanasi City (BCY)",
       byRoad: "Well connected to Lucknow (300 km), Patna (250 km)",
     },
+    nearbyAirports: [
+      { name: "Lal Bahadur Shastri Airport", code: "VNS", distance: 25, city: "Varanasi" },
+      { name: "Prayagraj Airport", code: "IXD", distance: 130, city: "Prayagraj" },
+    ],
+    nearbyStations: [
+      { name: "Varanasi Junction", code: "BSB", distance: 3, city: "Varanasi" },
+      { name: "Varanasi City", code: "BCY", distance: 1, city: "Varanasi" },
+      { name: "Mughal Sarai Junction", code: "MGS", distance: 18, city: "Chandauli" },
+    ],
     weather: {
       summer: "32-45°C (Very Hot)",
       monsoon: "26-35°C (Humid)",
@@ -270,6 +316,14 @@ const destinationsData: Record<string, any> = {
       byTrain: "Nearest station Joginder Nagar (165 km) or Chandigarh",
       byRoad: "Well connected from Delhi (540 km) and Chandigarh (310 km)",
     },
+    nearbyAirports: [
+      { name: "Kullu-Manali Airport", code: "KUU", distance: 50, city: "Bhuntar" },
+      { name: "Chandigarh Airport", code: "IXC", distance: 310, city: "Chandigarh" },
+    ],
+    nearbyStations: [
+      { name: "Joginder Nagar", code: "JGNR", distance: 165, city: "Joginder Nagar" },
+      { name: "Chandigarh Junction", code: "CDG", distance: 310, city: "Chandigarh" },
+    ],
     weather: {
       summer: "10-25°C (Pleasant)",
       monsoon: "10-20°C (Landslides possible)",
@@ -308,6 +362,13 @@ const destinationsData: Record<string, any> = {
       bySea: "Ship from Chennai (3 days) or Kolkata (4 days)",
       interIsland: "Government ferries and private speedboats",
     },
+    nearbyAirports: [
+      { name: "Veer Savarkar Airport", code: "IXZ", distance: 3, city: "Port Blair" },
+      { name: "Chennai Airport", code: "MAA", distance: 1370, city: "Chennai" },
+    ],
+    nearbyStations: [
+      { name: "No direct railway", code: "N/A", distance: 0, city: "Port Blair (ferry/ship)" },
+    ],
     weather: {
       summer: "24-35°C (Humid)",
       monsoon: "24-30°C (Heavy Rainfall, Not Ideal)",
@@ -346,6 +407,14 @@ const destinationsData: Record<string, any> = {
       byTrain: "Udaipur City Railway Station (UDZ)",
       byRoad: "Well connected to Jaipur (400 km), Ahmedabad (260 km)",
     },
+    nearbyAirports: [
+      { name: "Maharana Pratap Airport", code: "UDR", distance: 22, city: "Udaipur" },
+      { name: "Ahmedabad Airport", code: "AMD", distance: 260, city: "Ahmedabad" },
+    ],
+    nearbyStations: [
+      { name: "Udaipur City", code: "UDZ", distance: 4, city: "Udaipur" },
+      { name: "Chittorgarh Junction", code: "COR", distance: 115, city: "Chittorgarh" },
+    ],
     weather: {
       summer: "30-42°C (Hot)",
       monsoon: "25-35°C (Scenic, Lakes Full)",
@@ -384,6 +453,14 @@ const destinationsData: Record<string, any> = {
       byTrain: "Kalka Junction, then Toy Train to Shimla (96 km scenic journey)",
       byRoad: "Well connected to Delhi (350 km), Chandigarh (117 km)",
     },
+    nearbyAirports: [
+      { name: "Shimla Airport", code: "SLV", distance: 23, city: "Shimla" },
+      { name: "Chandigarh Airport", code: "IXC", distance: 117, city: "Chandigarh" },
+    ],
+    nearbyStations: [
+      { name: "Kalka Junction", code: "KLK", distance: 96, city: "Kalka" },
+      { name: "Shimla (Toy Train)", code: "SML", distance: 0, city: "Shimla" },
+    ],
     weather: {
       summer: "15-25°C (Pleasant)",
       monsoon: "12-20°C (Moderate Rainfall)",
@@ -422,6 +499,14 @@ const destinationsData: Record<string, any> = {
       byTrain: "Rishikesh Railway Station or Haridwar Junction (25 km)",
       byRoad: "Well connected to Delhi (240 km), Haridwar (25 km)",
     },
+    nearbyAirports: [
+      { name: "Jolly Grant Airport", code: "DED", distance: 35, city: "Dehradun" },
+      { name: "Hindon Airport", code: "HDO", distance: 240, city: "Ghaziabad" },
+    ],
+    nearbyStations: [
+      { name: "Rishikesh Station", code: "RKSH", distance: 2, city: "Rishikesh" },
+      { name: "Haridwar Junction", code: "HW", distance: 25, city: "Haridwar" },
+    ],
     weather: {
       summer: "25-35°C (Hot)",
       monsoon: "20-30°C (Heavy Rainfall, Rafting Closed)",
@@ -460,6 +545,14 @@ const destinationsData: Record<string, any> = {
       byTrain: "New Jalpaiguri (NJP) - 88 km, then by road or toy train",
       byRoad: "Well connected to Siliguri (80 km), Gangtok (100 km)",
     },
+    nearbyAirports: [
+      { name: "Bagdogra International Airport", code: "IXB", distance: 90, city: "Siliguri" },
+      { name: "Cooch Behar Airport", code: "COH", distance: 170, city: "Cooch Behar" },
+    ],
+    nearbyStations: [
+      { name: "New Jalpaiguri", code: "NJP", distance: 88, city: "Siliguri" },
+      { name: "Darjeeling Station (Toy Train)", code: "DJ", distance: 0, city: "Darjeeling" },
+    ],
     weather: {
       summer: "12-18°C (Pleasant)",
       monsoon: "15-20°C (Heavy Rainfall)",
@@ -498,6 +591,15 @@ const destinationsData: Record<string, any> = {
       byTrain: "Agra Cantt (AGC) - well connected by Shatabdi, Gatimaan Express",
       byRoad: "Yamuna Expressway from Delhi (200 km, 3 hours)",
     },
+    nearbyAirports: [
+      { name: "Agra Airport", code: "AGR", distance: 13, city: "Agra" },
+      { name: "Delhi IGI Airport", code: "DEL", distance: 200, city: "New Delhi" },
+    ],
+    nearbyStations: [
+      { name: "Agra Cantt", code: "AGC", distance: 5, city: "Agra" },
+      { name: "Agra Fort", code: "AF", distance: 3, city: "Agra" },
+      { name: "Raja Ki Mandi", code: "RKM", distance: 4, city: "Agra" },
+    ],
     weather: {
       summer: "35-45°C (Very Hot)",
       monsoon: "28-35°C (Humid)",
@@ -536,6 +638,15 @@ const destinationsData: Record<string, any> = {
       byTrain: "Mumbai Central (MMCT), CST, Dadar - major railway junctions",
       byRoad: "Well connected via Mumbai-Pune Expressway, NH48",
     },
+    nearbyAirports: [
+      { name: "Chhatrapati Shivaji Airport", code: "BOM", distance: 29, city: "Mumbai" },
+      { name: "Pune Airport", code: "PNQ", distance: 160, city: "Pune" },
+    ],
+    nearbyStations: [
+      { name: "Chhatrapati Shivaji Terminus", code: "CSMT", distance: 1, city: "Mumbai" },
+      { name: "Mumbai Central", code: "MMCT", distance: 3, city: "Mumbai" },
+      { name: "Lokmanya Tilak Terminus", code: "LTT", distance: 12, city: "Mumbai" },
+    ],
     weather: {
       summer: "30-35°C (Hot & Humid)",
       monsoon: "25-30°C (Heavy Rainfall)",
@@ -1112,6 +1223,93 @@ export default function DestinationDetail() {
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* Nearby Airports & Railway Stations */}
+                {(destination.nearbyAirports || destination.nearbyStations) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    {destination.nearbyAirports && (
+                      <Card>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="flex items-center gap-2 text-base">
+                            <Plane className="w-5 h-5 text-primary" />
+                            Nearby Airports
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          {destination.nearbyAirports.map((airport: { name: string; code: string; distance: number; city: string }) => (
+                            <div key={airport.code} className="flex items-center justify-between p-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                  <Plane className="w-4 h-4 text-primary" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium">{airport.name}</p>
+                                  <p className="text-xs text-muted-foreground">{airport.city} · <span className="font-semibold text-primary">{airport.code}</span></p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm font-semibold">{airport.distance} km</p>
+                                <a
+                                  href={`https://www.makemytrip.com/flights/`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-primary hover:underline flex items-center gap-0.5 justify-end"
+                                >
+                                  Book <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </div>
+                            </div>
+                          ))}
+                          <Button className="w-full mt-2" variant="outline" onClick={() => navigate("/flights")}>
+                            <Plane className="w-4 h-4 mr-2" />
+                            Search All Flights
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {destination.nearbyStations && (
+                      <Card>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="flex items-center gap-2 text-base">
+                            <Train className="w-5 h-5 text-primary" />
+                            Nearby Railway Stations
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          {destination.nearbyStations.map((station: { name: string; code: string; distance: number; city: string }) => (
+                            <div key={station.code} className="flex items-center justify-between p-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                  <Building2 className="w-4 h-4 text-primary" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium">{station.name}</p>
+                                  <p className="text-xs text-muted-foreground">{station.city} · <span className="font-semibold text-primary">{station.code}</span></p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm font-semibold">{station.distance > 0 ? `${station.distance} km` : "In city"}</p>
+                                <a
+                                  href={`https://www.irctc.co.in/nget/train-search`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-primary hover:underline flex items-center gap-0.5 justify-end"
+                                >
+                                  Book <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </div>
+                            </div>
+                          ))}
+                          <Button className="w-full mt-2" variant="outline" onClick={() => navigate("/transport")}>
+                            <Train className="w-4 h-4 mr-2" />
+                            Search All Trains
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           </div>
