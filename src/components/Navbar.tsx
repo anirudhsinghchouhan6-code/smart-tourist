@@ -12,6 +12,7 @@ import {
   Heart,
   LogOut,
   ChevronDown,
+  ShieldCheck,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -82,6 +83,10 @@ export function Navbar() {
                   <DropdownMenuItem onClick={() => navigate("/saved-trips")}>
                     <Heart className="w-4 h-4 mr-2" />
                     Saved Trips
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin")}>
+                    <ShieldCheck className="w-4 h-4 mr-2" />
+                    Admin Panel
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut}>
