@@ -217,38 +217,8 @@ export default function Admin() {
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant={u.roles.includes("admin") ? "destructive" : "outline"}
-                            disabled={togglingRole === `${u.id}-admin`}
-                            onClick={() => toggleRole(u.id, "admin")}
-                          >
-                            {togglingRole === `${u.id}-admin` ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : u.roles.includes("admin") ? (
-                              "Remove Admin"
-                            ) : (
-                              "Make Admin"
-                            )}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant={u.roles.includes("moderator") ? "destructive" : "outline"}
-                            disabled={togglingRole === `${u.id}-moderator`}
-                            onClick={() => toggleRole(u.id, "moderator")}
-                          >
-                            {togglingRole === `${u.id}-moderator` ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : u.roles.includes("moderator") ? (
-                              "Remove Mod"
-                            ) : (
-                              "Make Mod"
-                            )}
-                          </Button>
-                        </div>
-                      </TableCell>
+
+
                     </TableRow>
                   ))}
                 </TableBody>
