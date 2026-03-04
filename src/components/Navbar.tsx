@@ -12,6 +12,7 @@ import {
   Heart,
   LogOut,
   ChevronDown,
+  ShieldCheck,
 } from "lucide-react";
 import {
   DropdownMenu,
