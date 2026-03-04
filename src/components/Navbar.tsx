@@ -84,6 +84,10 @@ export function Navbar() {
                     <Heart className="w-4 h-4 mr-2" />
                     Saved Trips
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin")}>
+                    <ShieldCheck className="w-4 h-4 mr-2" />
+                    Admin Panel
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut}>
                     <LogOut className="w-4 h-4 mr-2" />
