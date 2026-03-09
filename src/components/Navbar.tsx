@@ -26,8 +26,18 @@ import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  useState(() => {
+    if (user) {
+      supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+        setIsAdmin(!!data);
+      });
+    }
+  });
+
 
   const navLinks = [
     { name: "Flights", href: "/flights", icon: Plane },
