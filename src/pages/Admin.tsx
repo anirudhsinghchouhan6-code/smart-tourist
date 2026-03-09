@@ -26,6 +26,7 @@ interface AdminUser {
   last_sign_in_at: string | null;
   profile: { full_name: string | null; phone: string | null } | null;
   roles: string[];
+  persons: number;
 }
 
 export default function Admin() {
@@ -179,7 +180,8 @@ export default function Admin() {
                     <TableHead>User</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead>Last Sign In</TableHead>
-                    <TableHead>Roles</TableHead>
+                     <TableHead>Persons</TableHead>
+                     <TableHead>Roles</TableHead>
                     
                   </TableRow>
                 </TableHeader>
@@ -201,6 +203,9 @@ export default function Admin() {
                         {u.last_sign_in_at
                           ? new Date(u.last_sign_in_at).toLocaleDateString()
                           : "Never"}
+                      </TableCell>
+                      <TableCell className="text-sm font-medium">
+                        {u.persons}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-1 flex-wrap">
