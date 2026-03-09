@@ -204,6 +204,9 @@ export default function Admin() {
                           ? new Date(u.last_sign_in_at).toLocaleDateString()
                           : "Never"}
                       </TableCell>
+                      <TableCell className="text-sm font-medium">
+                        {u.persons}
+                      </TableCell>
                       <TableCell>
                         <div className="flex gap-1 flex-wrap">
                           {u.roles.length === 0 && (

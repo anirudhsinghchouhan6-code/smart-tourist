@@ -49,18 +49,24 @@ Deno.serve(async (req) => {
       const { data: { users }, error } = await adminClient.auth.admin.listUsers({ perPage: 100 });
       if (error) throw error;
 
-      // Get all profiles and roles
+      // Get all profiles, roles, and bookings
       const { data: profiles } = await adminClient.from("profiles").select("*");
       const { data: roles } = await adminClient.from("user_roles").select("*");
+      const { data: bookings } = await adminClient.from("bookings").select("user_id, travelers_count");
 
-      const enrichedUsers = users.map((u: any) => ({
-        id: u.id,
-        email: u.email,
-        created_at: u.created_at,
-        last_sign_in_at: u.last_sign_in_at,
-        profile: profiles?.find((p: any) => p.user_id === u.id) || null,
-        roles: roles?.filter((r: any) => r.user_id === u.id).map((r: any) => r.role) || [],
-      }));
+      const enrichedUsers = users.map((u: any) => {
+        const userBookings = bookings?.filter((b: any) => b.user_id === u.id) || [];
+        const totalPersons = userBookings.reduce((sum: number, b: any) => sum + (b.travelers_count || 0), 0);
+        return {
+          id: u.id,
+          email: u.email,
+          created_at: u.created_at,
+          last_sign_in_at: u.last_sign_in_at,
+          profile: profiles?.find((p: any) => p.user_id === u.id) || null,
+          roles: roles?.filter((r: any) => r.user_id === u.id).map((r: any) => r.role) || [],
+          persons: totalPersons,
+        };
+      });
 
       return new Response(JSON.stringify({ users: enrichedUsers }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
