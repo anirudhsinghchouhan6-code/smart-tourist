@@ -182,7 +182,7 @@ export default function Admin() {
                     <TableHead>Last Sign In</TableHead>
                      <TableHead>Persons</TableHead>
                      <TableHead>Roles</TableHead>
-                    
+                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
