@@ -180,7 +180,8 @@ export default function Admin() {
                     <TableHead>User</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead>Last Sign In</TableHead>
-                    <TableHead>Roles</TableHead>
+                     <TableHead>Persons</TableHead>
+                     <TableHead>Roles</TableHead>
                     
                   </TableRow>
                 </TableHeader>
