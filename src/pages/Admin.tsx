@@ -182,7 +182,7 @@ export default function Admin() {
                     <TableHead>Last Sign In</TableHead>
                      <TableHead>Persons</TableHead>
                      <TableHead>Roles</TableHead>
-                    
+                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -222,8 +222,32 @@ export default function Admin() {
                           ))}
                         </div>
                       </TableCell>
-
-
+                      <TableCell>
+                        <div className="flex gap-1 flex-wrap">
+                          {["admin", "moderator"].map((role) => {
+                            const has = u.roles.includes(role);
+                            const isToggling = togglingRole === `${u.id}-${role}`;
+                            return (
+                              <Button
+                                key={role}
+                                size="sm"
+                                variant={has ? "default" : "outline"}
+                                disabled={isToggling}
+                                onClick={() => toggleRole(u.id, role)}
+                                className="text-xs h-7"
+                              >
+                                {isToggling ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : has ? (
+                                  `Remove ${role}`
+                                ) : (
+                                  `Add ${role}`
+                                )}
+                              </Button>
+                            );
+                          })}
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
