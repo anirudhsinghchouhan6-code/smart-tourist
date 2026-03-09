@@ -30,13 +30,15 @@ export function Navbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
-  useState(() => {
+  useEffect(() => {
     if (user) {
       supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
         setIsAdmin(!!data);
       });
+    } else {
+      setIsAdmin(false);
     }
-  });
+  }, [user]);
 
 
   const navLinks = [
