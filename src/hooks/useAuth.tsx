@@ -85,15 +85,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast({
-        title: "Sign out failed",
-        description: error.message,
-        variant: "destructive",
-      });
-      throw error;
+    try {
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
+      if (error) console.warn("Sign out warning:", error.message);
+    } catch (e) {
+      console.warn("Sign out error:", e);
     }
+    setUser(null);
+    setSession(null);
     toast({
       title: "Signed out",
       description: "See you on your next adventure!",
