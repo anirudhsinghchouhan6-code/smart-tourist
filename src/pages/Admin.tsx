@@ -26,6 +26,7 @@ interface AdminUser {
   last_sign_in_at: string | null;
   profile: { full_name: string | null; phone: string | null } | null;
   roles: string[];
+  persons: number;
 }
 
 export default function Admin() {
