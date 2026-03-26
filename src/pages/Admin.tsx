@@ -264,6 +264,19 @@ export default function Admin() {
                               </Button>
                             );
                           })}
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            disabled={deletingUser === u.id}
+                            onClick={() => deleteUser(u.id)}
+                            className="text-xs h-7"
+                          >
+                            {deletingUser === u.id ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <><Trash2 className="w-3 h-3 mr-1" /> Delete</>
+                            )}
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
