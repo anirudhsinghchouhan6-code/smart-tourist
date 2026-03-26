@@ -224,7 +224,7 @@ export default function Admin() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-1 flex-wrap">
-                          {["admin", "moderator"].map((role) => {
+                          {["admin", "moderator", "user"].map((role) => {
                             const has = u.roles.includes(role);
                             const isToggling = togglingRole === `${u.id}-${role}`;
                             return (
