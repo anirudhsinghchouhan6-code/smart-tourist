@@ -209,10 +209,10 @@ export default function Admin() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-1 flex-wrap">
-                          {u.roles.length === 0 && (
-                            <Badge variant="secondary">user</Badge>
+                          {u.roles.filter((r) => r !== "user").length === 0 && (
+                            <span className="text-sm text-muted-foreground">—</span>
                           )}
-                          {u.roles.map((r) => (
+                          {u.roles.filter((r) => r !== "user").map((r) => (
                             <Badge
                               key={r}
                               variant={r === "admin" ? "default" : "secondary"}
