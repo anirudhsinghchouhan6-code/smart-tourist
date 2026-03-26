@@ -37,6 +37,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [togglingRole, setTogglingRole] = useState<string | null>(null);
+  const [deletingUser, setDeletingUser] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
