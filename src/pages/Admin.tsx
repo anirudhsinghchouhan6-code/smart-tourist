@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Shield, ShieldCheck, Users, Loader2 } from "lucide-react";
+import { Shield, ShieldCheck, Users, Loader2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 
@@ -37,6 +37,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [togglingRole, setTogglingRole] = useState<string | null>(null);
+  const [deletingUser, setDeletingUser] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -87,6 +88,23 @@ export default function Admin() {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally {
       setTogglingRole(null);
+    }
+  };
+
+  const deleteUser = async (userId: string) => {
+    if (!confirm("Are you sure you want to delete this user? This cannot be undone.")) return;
+    setDeletingUser(userId);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-users?action=delete-user", {
+        body: { userId },
+      });
+      if (error || data?.error) throw new Error(data?.error || error?.message);
+      toast({ title: "User deleted" });
+      fetchUsers();
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally {
+      setDeletingUser(null);
     }
   };
 
@@ -246,6 +264,19 @@ export default function Admin() {
                               </Button>
                             );
                           })}
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            disabled={deletingUser === u.id}
+                            onClick={() => deleteUser(u.id)}
+                            className="text-xs h-7"
+                          >
+                            {deletingUser === u.id ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <><Trash2 className="w-3 h-3 mr-1" /> Delete</>
+                            )}
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
