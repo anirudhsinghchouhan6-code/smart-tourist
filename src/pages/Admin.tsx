@@ -91,6 +91,23 @@ export default function Admin() {
     }
   };
 
+  const deleteUser = async (userId: string) => {
+    if (!confirm("Are you sure you want to delete this user? This cannot be undone.")) return;
+    setDeletingUser(userId);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-users?action=delete-user", {
+        body: { userId },
+      });
+      if (error || data?.error) throw new Error(data?.error || error?.message);
+      toast({ title: "User deleted" });
+      fetchUsers();
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally {
+      setDeletingUser(null);
+    }
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
