@@ -556,7 +556,13 @@ export default function Hotels() {
                           </CardContent>
                         </Card>
                       </motion.div>
-                    ))}
+                    )) : (
+                      <div className="text-center py-12 text-muted-foreground">
+                        <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg font-medium">No hotels found in "{destination}"</p>
+                        <p className="text-sm mt-1">Try searching for Goa, Agra, Hyderabad, Chennai, or Rajasthan</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
