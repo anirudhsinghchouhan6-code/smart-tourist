@@ -225,6 +225,14 @@ export default function Hotels() {
     setSearched(true);
   };
 
+  const filteredHotels = mockHotels.filter((hotel) => {
+    const query = destination.toLowerCase();
+    const matchesLocation = hotel.location.toLowerCase().includes(query) || hotel.name.toLowerCase().includes(query);
+    const matchesPrice = hotel.price >= priceRange[0] && hotel.price <= priceRange[1];
+    const matchesStars = selectedStars.includes(hotel.stars);
+    return matchesLocation && matchesPrice && matchesStars;
+  });
+
   const toggleStar = (star: number) => {
     if (selectedStars.includes(star)) {
       setSelectedStars(selectedStars.filter(s => s !== star));
@@ -461,13 +469,13 @@ export default function Hotels() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-display font-bold">
-                      {mockHotels.length} Hotels Found
+                      {filteredHotels.length} Hotels Found in "{destination}"
                     </h2>
                     <Badge variant="outline">Price: Low to High</Badge>
                   </div>
 
                   <div className="space-y-4">
-                    {mockHotels.map((hotel, index) => (
+                    {filteredHotels.length > 0 ? filteredHotels.map((hotel, index) => (
                       <motion.div
                         key={hotel.id}
                         initial={{ opacity: 0, y: 20 }}
@@ -548,7 +556,13 @@ export default function Hotels() {
                           </CardContent>
                         </Card>
                       </motion.div>
-                    ))}
+                    )) : (
+                      <div className="text-center py-12 text-muted-foreground">
+                        <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg font-medium">No hotels found in "{destination}"</p>
+                        <p className="text-sm mt-1">Try searching for Goa, Agra, Hyderabad, Chennai, or Rajasthan</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
