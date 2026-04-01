@@ -240,7 +240,7 @@ export default function TripPlanner() {
             key={step}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="max-w-2xl mx-auto"
+            className={step === 4 ? "max-w-4xl mx-auto" : "max-w-2xl mx-auto"}
           >
             {step === 1 && (
               <div className="bg-card rounded-2xl p-8 shadow-lg border space-y-6">
