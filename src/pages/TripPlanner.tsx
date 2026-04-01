@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AIChatWidget } from "@/components/AIChatWidget";
@@ -32,6 +34,10 @@ import {
   Waves,
   Building,
   TreePine,
+  Download,
+  Share2,
+  Plane,
+  Hotel,
 } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
@@ -234,7 +240,7 @@ export default function TripPlanner() {
             key={step}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="max-w-2xl mx-auto"
+            className={step === 4 ? "max-w-4xl mx-auto" : "max-w-2xl mx-auto"}
           >
             {step === 1 && (
               <div className="bg-card rounded-2xl p-8 shadow-lg border space-y-6">
@@ -477,49 +483,110 @@ export default function TripPlanner() {
             )}
 
             {step === 4 && (
-              <div className="bg-card rounded-2xl p-8 shadow-lg border space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-display font-bold flex items-center gap-2">
-                    <Sparkles className="w-6 h-6 text-primary" />
-                    Your Itinerary
-                  </h2>
-                  {isGenerating && (
-                    <div className="flex items-center gap-2 text-primary">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-sm">Generating...</span>
+              <div className="space-y-6">
+                {/* Itinerary Header Card */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-coral/10 to-teal/10 p-8 border shadow-lg"
+                >
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-teal/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+                  
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                          <Sparkles className="w-5 h-5 text-primary" />
+                        </div>
+                        <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+                          Your Dream Itinerary
+                        </h2>
+                      </div>
+                      <p className="text-muted-foreground">
+                        {formData.destination} • {formData.travelers} travelers • ₹{budget[0].toLocaleString('en-IN')} budget
+                      </p>
                     </div>
-                  )}
-                </div>
-
-                <div className="prose prose-sm max-w-none dark:prose-invert">
-                  <div className="whitespace-pre-wrap text-foreground leading-relaxed">
-                    {itinerary || (
-                      <div className="flex items-center justify-center py-12 text-muted-foreground">
-                        <Loader2 className="w-8 h-8 animate-spin mr-3" />
-                        Creating your personalized itinerary...
+                    {isGenerating && (
+                      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-sm font-medium">Generating...</span>
                       </div>
                     )}
                   </div>
-                </div>
+                </motion.div>
 
+                {/* Itinerary Content */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="bg-card rounded-2xl p-6 md:p-10 shadow-lg border"
+                >
+                  {itinerary ? (
+                    <div className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-display prose-headings:text-foreground prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-border prose-h3:text-xl prose-h3:text-primary prose-h3:mt-6 prose-strong:text-foreground prose-table:border prose-table:border-border prose-th:bg-muted prose-th:p-3 prose-td:p-3 prose-td:border prose-td:border-border prose-th:border prose-th:border-border prose-hr:border-border prose-li:marker:text-primary prose-a:text-primary">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {itinerary}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+                      <div className="relative mb-6">
+                        <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-teal/20 flex items-center justify-center">
+                          <Sparkles className="w-3 h-3 text-teal" />
+                        </div>
+                      </div>
+                      <p className="text-lg font-medium text-foreground mb-1">Crafting your perfect trip...</p>
+                      <p className="text-sm">Our AI is curating personalized recommendations just for you</p>
+                    </div>
+                  )}
+                </motion.div>
+
+                {/* Action Buttons */}
                 {!isGenerating && itinerary && (
-                  <div className="flex gap-4 pt-4 border-t">
-                    <Button variant="outline" onClick={() => setStep(1)}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="grid grid-cols-1 sm:grid-cols-4 gap-3"
+                  >
+                    <Button
+                      variant="outline"
+                      className="h-14 rounded-xl"
+                      onClick={() => setStep(1)}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
                       Plan Another Trip
                     </Button>
                     <Button
-                      className="flex-1 bg-coral-gradient"
+                      className="h-14 rounded-xl bg-coral-gradient hover:opacity-90"
                       onClick={() => navigate("/flights")}
                     >
+                      <Plane className="w-4 h-4 mr-2" />
                       Book Flights
                     </Button>
                     <Button
-                      variant="outline"
+                      className="h-14 rounded-xl bg-teal text-white hover:bg-teal/90"
                       onClick={() => navigate("/hotels")}
                     >
+                      <Hotel className="w-4 h-4 mr-2" />
                       Find Hotels
                     </Button>
-                  </div>
+                    <Button
+                      variant="outline"
+                      className="h-14 rounded-xl"
+                      onClick={() => {
+                        navigator.clipboard.writeText(itinerary);
+                        toast({ title: "Copied!", description: "Itinerary copied to clipboard" });
+                      }}
+                    >
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Copy Itinerary
+                    </Button>
+                  </motion.div>
                 )}
               </div>
             )}
