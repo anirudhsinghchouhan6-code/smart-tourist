@@ -590,8 +590,6 @@ export default function TripPlanner() {
                 )}
               </div>
             )}
-              </div>
-            )}
           </motion.div>
         </div>
       </main>
