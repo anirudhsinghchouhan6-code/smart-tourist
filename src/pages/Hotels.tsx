@@ -225,6 +225,14 @@ export default function Hotels() {
     setSearched(true);
   };
 
+  const filteredHotels = mockHotels.filter((hotel) => {
+    const query = destination.toLowerCase();
+    const matchesLocation = hotel.location.toLowerCase().includes(query) || hotel.name.toLowerCase().includes(query);
+    const matchesPrice = hotel.price >= priceRange[0] && hotel.price <= priceRange[1];
+    const matchesStars = selectedStars.includes(hotel.stars);
+    return matchesLocation && matchesPrice && matchesStars;
+  });
+
   const toggleStar = (star: number) => {
     if (selectedStars.includes(star)) {
       setSelectedStars(selectedStars.filter(s => s !== star));
