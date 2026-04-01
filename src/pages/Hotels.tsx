@@ -469,7 +469,7 @@ export default function Hotels() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-display font-bold">
-                      {mockHotels.length} Hotels Found
+                      {filteredHotels.length} Hotels Found in "{destination}"
                     </h2>
                     <Badge variant="outline">Price: Low to High</Badge>
                   </div>
