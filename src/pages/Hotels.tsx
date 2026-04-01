@@ -475,7 +475,7 @@ export default function Hotels() {
                   </div>
 
                   <div className="space-y-4">
-                    {mockHotels.map((hotel, index) => (
+                    {filteredHotels.length > 0 ? filteredHotels.map((hotel, index) => (
                       <motion.div
                         key={hotel.id}
                         initial={{ opacity: 0, y: 20 }}
