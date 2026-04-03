@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { 
   User, 
   MapPin, 
@@ -21,17 +22,26 @@ import {
   Train,
   Heart,
   Settings,
-  ChevronRight
+  ChevronRight,
+  Star,
+  Trash2,
+  ExternalLink
 } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Booking = Tables<"bookings">;
+type SavedTrip = Tables<"saved_trips"> & {
+  trip_packages?: Tables<"trip_packages"> | null;
+  destinations?: Tables<"destinations"> | null;
+};
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [profile, setProfile] = useState<Tables<"profiles"> | null>(null);
+  const [savedTrips, setSavedTrips] = useState<SavedTrip[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -43,6 +53,7 @@ export default function Dashboard() {
     if (user) {
       fetchBookings();
       fetchProfile();
+      fetchSavedTrips();
     }
   }, [user]);
 
@@ -66,6 +77,36 @@ export default function Dashboard() {
     
     if (!error && data) {
       setProfile(data);
+    }
+  };
+
+  const fetchSavedTrips = async () => {
+    const { data, error } = await supabase
+      .from("saved_trips")
+      .select(`
+        *,
+        trip_packages(*),
+        destinations(*)
+      `)
+      .order("created_at", { ascending: false });
+    
+    if (!error && data) {
+      setSavedTrips(data);
+    }
+  };
+
+  const removeSavedTrip = async (id: string) => {
+    const { error } = await supabase
+      .from("saved_trips")
+      .delete()
+      .eq("id", id);
+    
+    if (!error) {
+      setSavedTrips(savedTrips.filter(trip => trip.id !== id));
+      toast({
+        title: "Trip removed",
+        description: "The trip has been removed from your saved list.",
+      });
     }
   };
 
@@ -164,13 +205,13 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="glass">
+            <Card className="glass cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/saved-trips")}>
               <CardContent className="p-6 flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center">
                   <Heart className="w-6 h-6 text-red-500" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">0</p>
+                  <p className="text-2xl font-bold">{savedTrips.length}</p>
                   <p className="text-sm text-muted-foreground">Saved</p>
                 </div>
               </CardContent>
@@ -186,7 +227,14 @@ export default function Dashboard() {
             <Tabs defaultValue="bookings" className="space-y-6">
               <TabsList className="grid w-full max-w-md grid-cols-3">
                 <TabsTrigger value="bookings">My Bookings</TabsTrigger>
-                <TabsTrigger value="trips">My Trips</TabsTrigger>
+                <TabsTrigger value="trips" className="relative">
+                  Saved Trips
+                  {savedTrips.length > 0 && (
+                    <Badge className="ml-1.5 bg-red-500 text-white text-xs px-1.5 py-0 min-w-[18px] h-[18px]">
+                      {savedTrips.length}
+                    </Badge>
+                  )}
+                </TabsTrigger>
                 <TabsTrigger value="profile">Profile</TabsTrigger>
               </TabsList>
 
@@ -258,20 +306,128 @@ export default function Dashboard() {
               </TabsContent>
 
               <TabsContent value="trips" className="space-y-4">
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                      <MapPin className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">No saved trips</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Plan and save your dream trips here
-                    </p>
-                    <Button onClick={() => navigate("/trip-planner")} className="bg-coral-gradient">
-                      Create New Trip
+                {savedTrips.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-12 text-center">
+                      <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+                        <Heart className="w-8 h-8 text-red-500" />
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2">No saved trips yet</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Explore destinations and save your favorites to plan later
+                      </p>
+                      <div className="flex gap-3 justify-center">
+                        <Button onClick={() => navigate("/destinations")} variant="outline">
+                          Explore Destinations
+                        </Button>
+                        <Button onClick={() => navigate("/trip-planner")} className="bg-coral-gradient">
+                          Plan a Trip
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {savedTrips.map((trip, index) => {
+                      const pkg = trip.trip_packages;
+                      const dest = trip.destinations;
+                      const item = pkg || dest;
+
+                      if (!item) return null;
+
+                      return (
+                        <motion.div
+                          key={trip.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <Card className="overflow-hidden group hover:shadow-xl transition-all">
+                            <div className="relative h-48">
+                              <img
+                                src={item.image_url || "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400"}
+                                alt={'title' in item ? item.title : item.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                              
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm hover:bg-red-500 hover:text-white"
+                                onClick={() => removeSavedTrip(trip.id)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+
+                              {item.rating && (
+                                <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                  <span className="text-white text-sm font-medium">{item.rating}</span>
+                                </div>
+                              )}
+                            </div>
+
+                            <CardContent className="p-4">
+                              <h3 className="font-semibold text-lg mb-2">
+                                {'title' in item ? item.title : item.name}
+                              </h3>
+                              
+                              {'destinations' in item && item.destinations && (
+                                <div className="flex items-center gap-1 text-muted-foreground mb-3">
+                                  <MapPin className="w-4 h-4" />
+                                  <span className="text-sm">{item.destinations.join(" → ")}</span>
+                                </div>
+                              )}
+
+                              {'country' in item && (
+                                <div className="flex items-center gap-1 text-muted-foreground mb-3">
+                                  <MapPin className="w-4 h-4" />
+                                  <span className="text-sm">{item.country}</span>
+                                </div>
+                              )}
+
+                              <div className="flex items-center justify-between">
+                                {'price_per_person' in item && (
+                                  <div>
+                                    <span className="text-2xl font-bold text-primary">
+                                      ₹{item.price_per_person.toLocaleString()}
+                                    </span>
+                                    <span className="text-sm text-muted-foreground">/person</span>
+                                  </div>
+                                )}
+                                
+                                <Button
+                                  size="sm"
+                                  className="bg-coral-gradient"
+                                  onClick={() => {
+                                    if ('title' in item && dest === null) {
+                                      navigate("/trip-planner");
+                                    } else if (dest) {
+                                      navigate(`/destination/${dest.id}`);
+                                    }
+                                  }}
+                                >
+                                  View Details
+                                  <ExternalLink className="w-4 h-4 ml-1" />
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {savedTrips.length > 0 && (
+                  <div className="text-center pt-4">
+                    <Button variant="outline" onClick={() => navigate("/saved-trips")}>
+                      View All Saved Trips
+                      <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
-                  </CardContent>
-                </Card>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="profile">
